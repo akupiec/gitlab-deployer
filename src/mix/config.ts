@@ -33,10 +33,6 @@ export class Config {
     return projects;
   }
 
-  get awaitTags() {
-    return this._config.tags.await;
-  }
-
   get refreshTime() {
     let time = this._config['refresh-time'];
     return time < 5000 ? 5000 : time;
@@ -72,5 +68,9 @@ export class Yargs {
 
   get project() {
     return this._args.project || 'all';
+  }
+
+  get await() {
+    return this._args.await;
   }
 }

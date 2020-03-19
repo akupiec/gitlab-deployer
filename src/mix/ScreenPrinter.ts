@@ -100,4 +100,20 @@ export class ScreenPrinter {
       return;
     }
   }
+
+  public updateProjectSpinner(project: Project, message: string) {
+    const data = this.projectsLines.get(project);
+    if (data.type === LineType.Spinner) {
+      data.lineObj.message(message);
+    }
+  }
+
+  public onEnd(promises: Promise<void>[]) {
+    Promise.all(promises).then(
+      () => console.log(chalk.green('[Success] ') + 'All done!'),
+      err => {
+        console.log(chalk.red('[Error] ') + 'Something went wrong!' + err);
+      },
+    );
+  }
 }
