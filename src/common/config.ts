@@ -38,6 +38,16 @@ export class Config {
     return time < 5000 ? 5000 : time;
   }
 
+  public getStage(project: Project) {
+    const stage = this._yargs.stage;
+    if (!this._config.deploy) return stage;
+
+    const jobName = this._config.deploy[project.name];
+    if (!jobName) return stage;
+
+    return jobName[stage] || stage;
+  }
+
   private initConfig() {
     let path = this._yargs.configPath;
     if (fs.existsSync(path)) {
@@ -72,5 +82,9 @@ export class Yargs {
 
   get await() {
     return this._args.await;
+  }
+
+  get stage() {
+    return this._args.stage;
   }
 }

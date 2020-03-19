@@ -1,3 +1,5 @@
+import { Job } from './job';
+
 const axios = require('axios');
 
 export enum StatusCode {
@@ -56,4 +58,30 @@ export function createPipeline(projectId: number, ref: string) {
     },
   };
   return axios(options).then(resp => resp.data);
+}
+
+export function findJob(projectId: number, pipelineId: string, jobName: string) {
+  const url = `${URI}/projects/${projectId}/pipelines/${pipelineId}/jobs`;
+  const options = {
+    url,
+    method: 'get',
+    headers,
+  };
+  return axios(options).then(resp => {
+    if (!resp.data) return;
+    const job = resp.data.find((job: Job) => job.name.includes(jobName));
+    return job;
+  });
+}
+
+export function playJob(projectId: number, jobId: string) {
+  const url = `${URI}/projects/${projectId}/jobs/${jobId}/retry`;
+  const options = {
+    url,
+    method: 'post',
+    headers,
+  };
+  return axios(options).then(resp => {
+    return resp.data;
+  });
 }

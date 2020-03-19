@@ -4,6 +4,7 @@ import { getPipelineByRef, StatusCode } from './api';
 import { sleep } from './sleep';
 
 export interface Pipeline {
+  id: string;
   status: string;
   created_at: string;
 }
