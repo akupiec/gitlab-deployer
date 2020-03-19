@@ -31,13 +31,12 @@ export class ScreenPrinter {
     }
   }
 
-  print() {
-    this.projectsLines.forEach((value, key) => {
-      process.stdout.cursorTo(0, value.yOffset);
-      console.log(`===== ${key.name} =====`);
-      this.handlePrintString(value, key);
-      this.handlePrintSpinner(value);
-    });
+  private static handlePrintSpinner(value: LineData) {
+    if (value.type === LineType.Spinner && !value.lineObj.isSpinning()) {
+      process.stdout.cursorTo(0, value.yOffset + 1);
+      process.stdout.clearLine(0);
+      value.lineObj.start(4, value.yOffset + 1);
+    }
   }
 
   addProject(project: Project) {
@@ -86,19 +85,20 @@ export class ScreenPrinter {
     ScreenPrinter.clearOldData(data);
   }
 
-  private handlePrintSpinner(value: LineData) {
-    if (value.type === LineType.Spinner && !value.lineObj.isSpinning()) {
-      process.stdout.cursorTo(0, value.yOffset + 1);
-      process.stdout.clearLine(0);
-      value.lineObj.start(4, value.yOffset + 1);
-    }
-  }
-
-  private handlePrintString(value: LineData, key: Project) {
+  private static handlePrintString(value: LineData, key: Project) {
     if (value.type === LineType.String) {
       console.log(`      ${value.message}`);
       return;
     }
+  }
+
+  print() {
+    this.projectsLines.forEach((value, key) => {
+      process.stdout.cursorTo(0, value.yOffset);
+      console.log(`===== ${key.name} =====`);
+      ScreenPrinter.handlePrintString(value, key);
+      ScreenPrinter.handlePrintSpinner(value);
+    });
   }
 
   public updateProjectSpinner(project: Project, message: string) {

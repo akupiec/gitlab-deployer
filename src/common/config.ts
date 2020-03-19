@@ -38,6 +38,10 @@ export class Config {
     return time < 5000 ? 5000 : time;
   }
 
+  get uri() {
+    return this._config['base-api'];
+  }
+
   public getStage(project: Project) {
     const stage = this._yargs.stage;
     if (!this._config.deploy) return stage;

@@ -11,7 +11,7 @@ export function runTags(args) {
   const promises = config.projects.map(async function(project) {
     screenPrinter.addProject(project);
     screenPrinter.print();
-    await crateTag(project, yargs, screenPrinter);
+    await crateTag(project, config, yargs, screenPrinter);
     return awaitComplete(project, config, yargs, screenPrinter);
   });
 
@@ -25,12 +25,12 @@ async function awaitComplete(
   screenPrinter: ScreenPrinter,
 ) {
   if (!yargs.await) return;
-  await awaitPipelineCompletion(project, yargs.tagName, screenPrinter, config.refreshTime);
+  await awaitPipelineCompletion(project, config, yargs.tagName, screenPrinter);
 }
 
-async function crateTag(project: Project, yargs: Yargs, screenPrinter: ScreenPrinter) {
+async function crateTag(project: Project, config: Config, yargs: Yargs, screenPrinter: ScreenPrinter) {
   screenPrinter.setProjectMessage(project, 'Creating Tag');
-  return createTagOnRef(project.id, yargs.tagName, yargs.ref).then(
+  return createTagOnRef(config.uri, project.id, yargs.tagName, yargs.ref).then(
     () => {
       screenPrinter.setProjectSuccess(project, 'New Tag crated');
       return StatusCode.Success;

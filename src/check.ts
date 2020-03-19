@@ -25,12 +25,12 @@ async function awaitComplete(
   screenPrinter: ScreenPrinter,
 ) {
   if (!yargs.await) return;
-  await awaitPipelineCompletion(project, yargs.ref, screenPrinter, config.refreshTime);
+  await awaitPipelineCompletion(project, config, yargs.ref, screenPrinter);
 }
 
 
 async function checkStatus(project: Project, config: Config, yargs: Yargs, screenPrinter: ScreenPrinter) {
-  const resp = await getPipeline(project, yargs.ref, screenPrinter) as Pipeline;
+  const resp = await getPipeline(project, config, yargs.ref, screenPrinter) as Pipeline;
   if (resp && resp.status) {
     screenPrinter.setProjectSuccess(project, 'Pipeline status: ' + resp.status + ' last update ' + resp.created_at);
   }

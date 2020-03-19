@@ -12,12 +12,11 @@ export function runDeploy(args) {
   const promises = config.projects.map(async function(project) {
     screenPrinter.addProject(project);
     screenPrinter.print();
-    const pipeline = (await getPipeline(project, yargs.ref, screenPrinter)) as Pipeline;
+    const pipeline = await getPipeline(project, config, yargs.ref, screenPrinter) as Pipeline;
     if (!pipeline.id) return;
-    const stage = config.getStage(project);
-    const job = (await getJob(project, pipeline, stage, screenPrinter)) as Job;
+    const job = (await getJob(project, pipeline, config, screenPrinter)) as Job;
     if (!job.id) return;
-    const trigJob = await triggerJob(project, job, screenPrinter) as Job;
+    const trigJob = await triggerJob(project, job, config, screenPrinter) as Job;
     if (!trigJob.id) return;
     return awaitComplete(project, config, yargs, screenPrinter);
   });
@@ -32,16 +31,18 @@ async function awaitComplete(
   screenPrinter: ScreenPrinter,
 ) {
   if (!yargs.await) return;
-  await awaitPipelineCompletion(project, yargs.ref, screenPrinter, config.refreshTime);
+  await awaitPipelineCompletion(project, config, yargs.ref, screenPrinter);
 }
 
 export async function getJob(
   project: Project,
   pipeline: Pipeline,
-  stage: string,
+  config: Config,
   screenPrinter: ScreenPrinter,
 ): Promise<StatusCode | Job> {
-  return findJob(project.id, pipeline.id, stage).then(
+  const stage = config.getStage(project);
+  const uri = config.uri;
+  return findJob(uri, project.id, pipeline.id, stage).then(
     data => {
       if (!data) {
         screenPrinter.setProjectWarn(project, 'Job Not Found');
@@ -58,8 +59,8 @@ export async function getJob(
   );
 }
 
-export async function triggerJob(project: Project, job: Job, screenPrinter: ScreenPrinter) {
-  return playJob(project.id, job.id).then(
+export async function triggerJob(project: Project, job: Job, config: Config, screenPrinter: ScreenPrinter) {
+  return playJob(config.uri, project.id, job.id).then(
     (data) => {
       screenPrinter.setProjectSuccess(project, 'Job Started');
       return data;
