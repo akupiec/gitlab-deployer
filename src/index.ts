@@ -3,6 +3,7 @@ import * as packageInfo from '../package.json';
 import { runTags } from './tags';
 import { runCheck } from './check';
 import { runPipeline } from './pipeline';
+import { runDeploy } from './deploy';
 
 require('yargs')
   .command(
@@ -19,7 +20,7 @@ require('yargs')
         })
         .positional('project', {
           default: 'all',
-          describe: 'name of project if should affect only one',
+          describe: 'name of affected project',
         })
         .option('await', {
           alias: 'a',
@@ -51,7 +52,7 @@ require('yargs')
         })
         .positional('project', {
           default: 'all',
-          describe: 'name of project if should affect only one',
+          describe: 'name of affected project',
         })
         .option('await', {
           alias: 'a',
@@ -72,7 +73,7 @@ require('yargs')
         })
         .positional('project', {
           default: 'all',
-          describe: 'name of project if should affect only one',
+          describe: 'name of affected project',
         })
         .option('await', {
           alias: 'a',
@@ -84,18 +85,29 @@ require('yargs')
     argv => runPipeline(argv),
   )
   .command(
-    'deploy <ref> <target> [stage]',
+    'deploy <ref> [stage] [project]',
     'runs deploy pipelines',
     yargs => {
       yargs
         .positional('ref', {
           describe: 'git ref position what should be deployed',
         })
-        .positional('target', {
-          describe: '',
+        .positional('stage', {
+          default: 'dev',
+          describe: 'name of stage job that will be triggered',
+        })
+        .positional('project', {
+          default: 'all',
+          describe: 'name of affected project',
+        })
+        .option('await', {
+          alias: 'a',
+          type: 'boolean',
+          default: true,
+          description: 'awaits pipeline completion',
         });
     },
-    argv => runTags(argv),
+    argv => runDeploy(argv),
   )
   .option('config', {
     type: 'string',
