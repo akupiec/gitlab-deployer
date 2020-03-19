@@ -27,7 +27,7 @@ async function awaitComplete(
   screenPrinter: ScreenPrinter,
 ) {
   if (!yargs.await) return;
-  await awaitPipelineCompletion(project, yargs.ref, screenPrinter, config.refreshTime);
+  await awaitPipelineCompletion(project, config, yargs.ref, screenPrinter);
 }
 
 function triggerPipeline(
@@ -36,7 +36,7 @@ function triggerPipeline(
   yargs: Yargs,
   screenPrinter: ScreenPrinter,
 ) {
-  return createPipeline(project.id, yargs.ref).then(
+  return createPipeline(config.uri, project.id, yargs.ref).then(
     () => {
       screenPrinter.setProjectSuccess(project, 'Pipeline crated');
       return StatusCode.Success;

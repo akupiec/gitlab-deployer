@@ -1,4 +1,4 @@
-import { Project } from './config';
+import { Config, Project } from './config';
 import { ScreenPrinter } from '../console/ScreenPrinter';
 import { getPipelineByRef, StatusCode } from './api';
 import { sleep } from './sleep';
@@ -11,10 +11,11 @@ export interface Pipeline {
 
 export async function getPipeline(
   project: Project,
+  config: Config,
   ref: string,
   screenPrinter: ScreenPrinter,
 ): Promise<StatusCode | Pipeline> {
-  return getPipelineByRef(project.id, ref).then(
+  return getPipelineByRef(config.uri, project.id, ref).then(
     data => {
       if (!data) {
         screenPrinter.setProjectWarn(project, 'Pipeline Not Found');
@@ -33,16 +34,16 @@ export async function getPipeline(
 
 export async function awaitPipelineCompletion(
   project: Project,
+  config: Config,
   ref: string,
   screenPrinter: ScreenPrinter,
-  refreshTime = 5000,
 ) {
   screenPrinter.setProjectSpinner(project, 'Awaiting pipeline...');
   let isCompleted = false;
   let resp;
   while (!isCompleted) {
-    await sleep(refreshTime);
-    resp = await getPipeline(project, ref, screenPrinter);
+    await sleep(config.refreshTime);
+    resp = await getPipeline(project, config, ref, screenPrinter);
     isCompleted =
       resp === StatusCode.Error ||
       resp === StatusCode.Warn ||
