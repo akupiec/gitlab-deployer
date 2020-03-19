@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 import * as packageInfo from '../package.json';
 import { runTags } from './tags';
+import { runCheck } from './check';
 
 require('yargs')
   .command(
     'tag <ref> <tag-name> [project]',
-    'bulk git tag management',
+    'creates new tags on configured projects',
     yargs => {
       yargs
         .positional('ref', {
-          describe: 'git ref position where tag should be located',
+          describe: 'git ref position where new tag should be located can be tag, branch or commit hash',
         })
         .positional('tag-name', {
           describe: 'tag name to remove/delete',
@@ -18,19 +19,46 @@ require('yargs')
           default: 'all',
           describe: 'name of project if should affect only one',
         })
-        .option('create', {
-          alias: 'c',
+        .option('await', {
+          alias: 'a',
           type: 'boolean',
           default: true,
-          description: 'indicates new tag to be created',
-        })
-        .option('delete', {
-          alias: 'd',
-          type: 'boolean',
-          description: 'indicates tag to be deleted',
+          description: 'awaits pipeline completion',
         });
+      // .option('create', {
+      //   alias: 'c',
+      //   type: 'boolean',
+      //   default: true,
+      //   description: 'indicates new tag to be created',
+      // })
+      // .option('delete', {
+      //   alias: 'd',
+      //   type: 'boolean',
+      //   description: 'indicates tag to be deleted',
+      // });
     },
     argv => runTags(argv),
+  )
+  .command(
+    'check <ref> [project]',
+    'check status of pipeline',
+    yargs => {
+      yargs
+        .positional('ref', {
+          describe: 'git ref position can be tag, branch or hash',
+        })
+        .positional('project', {
+          default: 'all',
+          describe: 'name of project if should affect only one',
+        })
+        .option('await', {
+          alias: 'a',
+          type: 'boolean',
+          default: false,
+          description: 'awaits pipeline completion',
+        });
+    },
+    argv => runCheck(argv),
   )
   .command(
     'deploy <ref> <target> [stage]',

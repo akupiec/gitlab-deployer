@@ -1,5 +1,11 @@
 const axios = require('axios');
 
+export enum StatusCode {
+  Error,
+  Success,
+  Warn,
+}
+
 const URI = 'https://git.signintra.com/api/v4';
 const headers = {
   'PRIVATE-TOKEN': process.env.DEPLOY_ACCESS_TEST,
