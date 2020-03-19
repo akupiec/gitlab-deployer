@@ -2,6 +2,7 @@
 import * as packageInfo from '../package.json';
 import { runTags } from './tags';
 import { runCheck } from './check';
+import { runPipeline } from './pipeline';
 
 require('yargs')
   .command(
@@ -10,7 +11,8 @@ require('yargs')
     yargs => {
       yargs
         .positional('ref', {
-          describe: 'git ref position where new tag should be located can be tag, branch or commit hash',
+          describe:
+            'git ref position where new tag should be located can be tag, branch or commit hash',
         })
         .positional('tag-name', {
           describe: 'tag name to remove/delete',
@@ -59,6 +61,27 @@ require('yargs')
         });
     },
     argv => runCheck(argv),
+  )
+  .command(
+    'pipeline <ref> [project]',
+    'trigger pipeline',
+    yargs => {
+      yargs
+        .positional('ref', {
+          describe: 'git ref position can be tag, branch or hash',
+        })
+        .positional('project', {
+          default: 'all',
+          describe: 'name of project if should affect only one',
+        })
+        .option('await', {
+          alias: 'a',
+          type: 'boolean',
+          default: true,
+          description: 'awaits pipeline completion',
+        });
+    },
+    argv => runPipeline(argv),
   )
   .command(
     'deploy <ref> <target> [stage]',

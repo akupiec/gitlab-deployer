@@ -43,3 +43,17 @@ export function createTagOnRef(projectId: number, tagName: string, ref: string) 
   };
   return axios(options).then(resp => resp.data);
 }
+
+export function createPipeline(projectId: number, ref: string) {
+  const url = `${URI}/projects/${projectId}/pipeline`;
+  const options = {
+    url,
+    method: 'post',
+    headers,
+    params: {
+      id: projectId,
+      ref: ref,
+    },
+  };
+  return axios(options).then(resp => resp.data);
+}

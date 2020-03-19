@@ -1,5 +1,5 @@
 import { Project } from './config';
-import { ScreenPrinter } from './ScreenPrinter';
+import { ScreenPrinter } from '../console/ScreenPrinter';
 import { getPipelineByRef, StatusCode } from './api';
 import { sleep } from './sleep';
 

@@ -1,9 +1,9 @@
 import { Config, Project, Yargs } from './common/config';
 import { ScreenPrinter } from './console/ScreenPrinter';
-import { createTagOnRef, StatusCode } from './common/api';
 import { awaitPipelineCompletion } from './common/pipelines';
+import { createPipeline, StatusCode } from './common/api';
 
-export function runTags(args) {
+export function runPipeline(args) {
   const yargs = new Yargs(args);
   const config = new Config(yargs);
   const screenPrinter = new ScreenPrinter();
@@ -11,8 +11,10 @@ export function runTags(args) {
   const promises = config.projects.map(async function(project) {
     screenPrinter.addProject(project);
     screenPrinter.print();
-    await crateTag(project, yargs, screenPrinter);
-    return awaitComplete(project, config, yargs, screenPrinter);
+    const resp = await triggerPipeline(project, config, yargs, screenPrinter);
+    if (resp === StatusCode.Success) {
+      return awaitComplete(project, config, yargs, screenPrinter);
+    }
   });
 
   screenPrinter.onEnd(promises);
@@ -25,18 +27,22 @@ async function awaitComplete(
   screenPrinter: ScreenPrinter,
 ) {
   if (!yargs.await) return;
-  await awaitPipelineCompletion(project, yargs.tagName, screenPrinter, config.refreshTime);
+  await awaitPipelineCompletion(project, yargs.ref, screenPrinter, config.refreshTime);
 }
 
-async function crateTag(project: Project, yargs: Yargs, screenPrinter: ScreenPrinter) {
-  screenPrinter.setProjectMessage(project, 'Creating Tag');
-  return createTagOnRef(project.id, yargs.tagName, yargs.ref).then(
+function triggerPipeline(
+  project: Project,
+  config: Config,
+  yargs: Yargs,
+  screenPrinter: ScreenPrinter,
+) {
+  return createPipeline(project.id, yargs.ref).then(
     () => {
-      screenPrinter.setProjectSuccess(project, 'New Tag crated');
+      screenPrinter.setProjectSuccess(project, 'Pipeline crated');
       return StatusCode.Success;
     },
-    error => {
-      screenPrinter.setProjectError(project, 'Cant create tag (already exists ?): ' + error);
+    err => {
+      screenPrinter.setProjectError(project, 'Pipeline not created ' + err);
       return StatusCode.Error;
     },
   );
