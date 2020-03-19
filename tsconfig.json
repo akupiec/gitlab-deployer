@@ -1,6 +1,12 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
     "resolveJsonModule": true,
-    "removeComments": true
+    "removeComments": true,
+    "target": "ES2018",
+    "moduleResolution": "node",
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   }
 }
