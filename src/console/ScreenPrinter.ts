@@ -1,4 +1,4 @@
-import { Project } from './config';
+import { Project } from '../common/config';
 import { initConsole } from './consoleUtils';
 import { LOGO_HEIGHT } from './logo';
 import * as chalk from 'chalk';

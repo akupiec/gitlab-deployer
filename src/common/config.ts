@@ -26,7 +26,7 @@ export class Config {
       if (projectKey.includes(this._yargs.project) || this._yargs.project === 'all') {
         projects.push({
           name: projectKey,
-          id: this._config.projects[projectKey].id,
+          id: this._config.projects[projectKey],
         });
       }
     }

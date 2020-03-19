@@ -1,6 +1,6 @@
-import { Config, Project, Yargs } from './mix/config';
-import { ScreenPrinter } from './mix/ScreenPrinter';
-import { awaitPipelineCompletion, getPipeline, Pipeline } from './mix/pipelines';
+import { Config, Project, Yargs } from './common/config';
+import { ScreenPrinter } from './console/ScreenPrinter';
+import { awaitPipelineCompletion, getPipeline, Pipeline } from './common/pipelines';
 
 export function runCheck(args) {
   const yargs = new Yargs(args);
