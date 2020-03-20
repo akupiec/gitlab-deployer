@@ -15,7 +15,9 @@
     "cli"
   ],
   "devDependencies": {
+    "@types/clui": "^0.3.0",
     "@types/node": "^13.7.4",
+    "@types/ramda": "^0.26.44",
     "prettier": "^1.19.1",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.6.2",
@@ -24,14 +26,14 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
-    "@types/clui": "^0.3.0",
-    "@types/ramda": "^0.26.44",
     "axios": "^0.19.2",
     "chalk": "^3.0.0",
     "clui": "^0.3.6",
     "enquirer": "^2.3.4",
     "inquirer": "^7.0.4",
+    "inquirer-autocomplete-prompt": "^1.0.2",
     "ramda": "^0.27.0",
+    "rxjs": "^6.5.4",
     "yaml": "^1.7.2",
     "yargs": "^15.1.0"
   }
