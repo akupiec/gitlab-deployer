@@ -4,6 +4,7 @@ import { runTags } from './tags';
 import { runCheck } from './check';
 import { runPipeline } from './pipeline';
 import { runDeploy } from './deploy';
+import { runInit } from './init';
 
 require('yargs')
   .command(
@@ -108,6 +109,13 @@ require('yargs')
         });
     },
     argv => runDeploy(argv),
+  )
+  .command(
+    'init',
+    'Create configuration file',
+    yargs => {
+    },
+    argv => runInit(argv),
   )
   .option('config', {
     type: 'string',

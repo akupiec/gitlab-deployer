@@ -83,3 +83,20 @@ export function playJob(URI: string, projectId: number, jobId: string) {
     return resp.data;
   });
 }
+
+export function findProject(URI: string, search: string) {
+  const url = `${URI}/projects`;
+
+  const options = {
+    url,
+    method: 'get',
+    headers,
+    params: {
+      search: search,
+    },
+  };
+  return axios(options).then(resp => {
+    return resp.data;
+  });
+
+}

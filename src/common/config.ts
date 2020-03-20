@@ -1,4 +1,6 @@
 import * as fs from 'fs';
+import { validateConfig } from './validateConfig';
+import * as chalk from 'chalk';
 
 const YAML = require('yaml');
 
@@ -38,7 +40,7 @@ export class Config {
     return time < 5000 ? 5000 : time;
   }
 
-  get uri() {
+  get uri(): string {
     return this._config['base-api'];
   }
 
@@ -57,6 +59,13 @@ export class Config {
     if (fs.existsSync(path)) {
       const file = fs.readFileSync(path, 'utf8');
       this._config = YAML.parse(file);
+      if (!validateConfig(this._config)) {
+        console.error(chalk.red('[ERROR] configuration file is invalid try using config creator'));
+        process.exit(-1);
+      }
+    } else {
+      console.error(chalk.red('[ERROR] configuration file is required, try using config creator'));
+      process.exit(-1);
     }
   }
 }
