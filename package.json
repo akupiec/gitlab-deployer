@@ -4,9 +4,10 @@
   "description": "GitLab deployment tool provides a set of useful functions for complex processes",
   "main": "dist/index.js",
   "scripts": {
-    "build": "webpack -c webpack.config.js"
+    "build": "webpack -c webpack.config.js",
+    "test": "npx ts-node src/index.ts --help"
   },
-  "author": "kupiecart@gmail.com",
+  "author": "kupiecart+os@gmail.com",
   "license": "MIT",
   "keywords": [
     "GitLab",
@@ -15,25 +16,19 @@
     "cli"
   ],
   "devDependencies": {
-    "@types/clui": "^0.3.0",
-    "@types/node": "^13.7.4",
-    "@types/ramda": "^0.26.44",
     "prettier": "^1.19.1",
-    "ts-loader": "^6.2.1",
-    "ts-node": "^8.6.2",
-    "typescript": "^3.8.2",
-    "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.11"
+    "ts-node": "^8.6.2"
   },
   "dependencies": {
+    "@types/node": "^13.7.4",
     "axios": "^0.19.2",
     "chalk": "^3.0.0",
-    "clui": "^0.3.6",
-    "enquirer": "^2.3.4",
     "inquirer": "^7.0.4",
     "inquirer-autocomplete-prompt": "^1.0.2",
-    "ramda": "^0.27.0",
-    "rxjs": "^6.5.4",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.8.2",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11",
     "yaml": "^1.7.2",
     "yargs": "^15.1.0"
   }
