@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import * as packageInfo from '../package.json';
 import { runTags } from './tags';
 import { runCheck } from './check';
