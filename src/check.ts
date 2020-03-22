@@ -1,6 +1,7 @@
-import { Config, Project, Yargs } from './common/config';
+import { Config, Project } from './common/Config';
 import { ScreenPrinter } from './console/ScreenPrinter';
-import { awaitPipelineCompletion, getPipeline, Pipeline } from './common/pipelines';
+import { awaitPipelineCompletion, getPipeline, IPipeline } from './common/pipelines';
+import { Yargs } from './common/Yargs';
 
 export function runCheck(args) {
   const yargs = new Yargs(args);
@@ -30,7 +31,7 @@ async function awaitComplete(
 
 
 async function checkStatus(project: Project, config: Config, yargs: Yargs, screenPrinter: ScreenPrinter) {
-  const resp = await getPipeline(project, config, yargs.ref, screenPrinter) as Pipeline;
+  const resp = await getPipeline(project, config, yargs.ref, screenPrinter) as IPipeline;
   if (resp && resp.status) {
     screenPrinter.setProjectSuccess(project, 'Pipeline status: ' + resp.status + ' last update ' + resp.created_at);
   }

@@ -1,8 +1,9 @@
-import { Project, Yargs } from './common/config';
+import { Project } from './common/Config';
 import * as fs from 'fs';
 import * as chalk from 'chalk';
 import * as packageInfo from '../package.json';
 import { findProject } from './common/api';
+import { Yargs } from './common/Yargs';
 
 var inquirer = require('inquirer');
 inquirer.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
@@ -13,12 +14,12 @@ export async function runInit(args) {
 
   checkIfFileExists(yargs);
 
-  const { basicAPI } = await basicAPIaaa();
-  const { projectNumber } = await inquirerNumProjects();
-  const projects = await inquirerProjects(basicAPI, projectNumber);
-  const { stages } = await inquirerStages();
-  let { isGenericJobs } = await isGenericNames();
-  let { refresh } = await inquirerRefreshTime();
+  const basicAPI = await askBasicApi();
+  const projectNumber = await askNumberOfProjects();
+  const projects = await askProjects(basicAPI, projectNumber);
+  const stages = await askStages();
+  const isGenericJobs = await askIsJobsNamesGeneric();
+  const refresh = await askRefreshTime();
   // questions for non-generic-names
 
   const config = {
@@ -28,9 +29,34 @@ export async function runInit(args) {
     deploy: mapStages(projects, stages, isGenericJobs),
     'refresh-time': refresh,
   };
-  //preview config
+  const openEditor = await askOpenEditor();
+  let data = YAML.stringify(config);
 
-  fs.writeFileSync(yargs.configPath, YAML.stringify(config));
+  if (openEditor) {
+    data = await askData(data);
+  }
+
+  fs.writeFileSync(yargs.configPath, data);
+}
+
+function askData(data: string) {
+  return inquirer
+    .prompt({
+      name: 'data',
+      message: 'You can edit and/or validate generated config.',
+      type: 'editor',
+      default: data,
+    })
+    .then(resp => resp.data);
+}
+
+function askOpenEditor() {
+  return inquirer.prompt({
+    name: 'openEditor',
+    message: 'Would you like to preview & edit your configuration ?',
+    type: 'confirm',
+    default: false,
+  }).then(resp => resp.openEditor);
 }
 
 function mapProjects(projects: Project[]) {
@@ -53,63 +79,73 @@ function mapStages(projects: Project[], stages: string[], isGenericJobs: boolean
   return ret;
 }
 
-async function isGenericNames() {
-  return inquirer.prompt({
-    name: 'isGenericJobs',
-    message:
-      'Is deployment jobs named like stages, ex.: "dev" stage will be triggered by "dev" job ',
-    type: 'confirm',
-  });
+async function askIsJobsNamesGeneric() {
+  return inquirer
+    .prompt({
+      name: 'isGenericJobs',
+      message:
+        'Is deployment jobs named like stages, ex.: "dev" stage will be triggered by "dev" job ',
+      type: 'confirm',
+    })
+    .then(resp => resp.isGenericJobs);
 }
 
-async function inquirerStages() {
-  return inquirer.prompt({
-    name: 'stages',
-    message: 'Provide deployment stages separated by comma',
-    type: 'input',
-    filter: function(input: string) {
-      return input.split(',').map(stage => stage.trim());
-    },
-  });
+async function askStages() {
+  return inquirer
+    .prompt({
+      name: 'stages',
+      message: 'Provide deployment stages separated by comma',
+      type: 'input',
+      filter: function(input: string) {
+        return input.split(',').map(stage => stage.trim());
+      },
+    })
+    .then(resp => resp.stages);
 }
 
-async function inquirerRefreshTime() {
-  return inquirer.prompt({
-    name: 'refresh',
-    message: 'Provide refresh time in [ms] how often pipelines will be checked',
-    type: 'number',
-    default: 10000,
-  });
+async function askRefreshTime() {
+  return inquirer
+    .prompt({
+      name: 'refresh',
+      message: 'Provide refresh time in [ms] how often pipelines will be checked',
+      type: 'number',
+      default: 10000,
+    })
+    .then(resp => resp.refresh);
 }
 
-function basicAPIaaa() {
-  return inquirer.prompt({
-    name: 'basicAPI',
-    message: 'Provide gitlab api v4 url',
-    type: 'input',
-    default: 'https://git.signintra.com/api/v4',
-    validate: function(input: string) {
-      if (!input.startsWith('https://')) {
-        return 'Protocol need to be a "https"';
-      }
-      if (!input.includes('/api/v4') || !input.includes('git')) {
-        return 'Invalid url, it should looks line https://git.<your-domain>.com/api/v4';
-      }
-      return true;
-    },
-  });
+function askBasicApi() {
+  return inquirer
+    .prompt({
+      name: 'data',
+      message: 'Provide gitlab api v4 url',
+      type: 'input',
+      default: 'https://git.<your_inner_domain>.com/api/v4',
+      validate: function(input: string) {
+        if (!input.startsWith('https://')) {
+          return 'Protocol need to be a "https"';
+        }
+        if (!input.includes('/api/v4') || !input.includes('git')) {
+          return 'Invalid url, it should looks line https://git.<your_inner_domain>.com/api/v4';
+        }
+        return true;
+      },
+    })
+    .then(resp => resp.data);
 }
 
-function inquirerNumProjects() {
-  return inquirer.prompt({
-    name: 'projectNumber',
-    message: 'How many subprojects you want to configure?',
-    type: 'number',
-    default: 4,
-  });
+function askNumberOfProjects() {
+  return inquirer
+    .prompt({
+      name: 'projectNumber',
+      message: 'How many subprojects you want to configure?',
+      type: 'number',
+      default: 4,
+    })
+    .then(resp => resp.projectNumber);
 }
 
-async function inquirerProjects(url: string, num: number) {
+async function askProjects(url: string, num: number) {
   const projects = [];
   for (let i = 0; i < num; i++) {
     const { project } = await inquirer.prompt({

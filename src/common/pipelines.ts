@@ -1,9 +1,9 @@
-import { Config, Project } from './config';
+import { Config, Project } from './Config';
 import { ScreenPrinter } from '../console/ScreenPrinter';
 import { getPipelineByRef, StatusCode } from './api';
 import { sleep } from './sleep';
 
-export interface Pipeline {
+export interface IPipeline {
   id: string;
   status: string;
   created_at: string;
@@ -14,7 +14,7 @@ export async function getPipeline(
   config: Config,
   ref: string,
   screenPrinter: ScreenPrinter,
-): Promise<StatusCode | Pipeline> {
+): Promise<StatusCode | IPipeline> {
   return getPipelineByRef(config.uri, project.id, ref).then(
     data => {
       if (!data) {
@@ -47,9 +47,9 @@ export async function awaitPipelineCompletion(
     isCompleted =
       resp === StatusCode.Error ||
       resp === StatusCode.Warn ||
-      (resp as Pipeline).status === 'success';
+      (resp as IPipeline).status === 'success';
 
-    if ((resp as Pipeline).status === 'pending') {
+    if ((resp as IPipeline).status === 'pending') {
       screenPrinter.updateProjectSpinner(project, 'Pipeline in progress...');
     }
   }

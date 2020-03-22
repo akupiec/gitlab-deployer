@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import { validateConfig } from './validateConfig';
 import * as chalk from 'chalk';
+import { Yargs } from './Yargs';
 
 const YAML = require('yaml');
 
@@ -70,34 +71,3 @@ export class Config {
   }
 }
 
-export class Yargs {
-  private _args;
-
-  constructor(args) {
-    this._args = args;
-  }
-
-  get configPath(): string {
-    return this._args.config;
-  }
-
-  get ref() {
-    return this._args.ref;
-  }
-
-  get tagName() {
-    return this._args.tagName;
-  }
-
-  get project() {
-    return this._args.project || 'all';
-  }
-
-  get await() {
-    return this._args.await;
-  }
-
-  get stage() {
-    return this._args.stage;
-  }
-}

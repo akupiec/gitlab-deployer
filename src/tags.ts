@@ -1,7 +1,8 @@
-import { Config, Project, Yargs } from './common/config';
+import { Config, Project } from './common/Config';
 import { ScreenPrinter } from './console/ScreenPrinter';
 import { createTagOnRef, StatusCode } from './common/api';
 import { awaitPipelineCompletion } from './common/pipelines';
+import { Yargs } from './common/Yargs';
 
 export function runTags(args) {
   const yargs = new Yargs(args);
