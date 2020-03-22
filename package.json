@@ -5,7 +5,7 @@
   "main": "dist/gitlab-deployer",
   "private": true,
   "scripts": {
-    "build": "webpack -c webpack.config.js",
+    "build": "webpack -c webpack.config.js && chmod +x dist/gitlab-deployer",
     "test": "npx ts-node src/index.ts --help"
   },
   "author": "kupiecart+os@gmail.com",
