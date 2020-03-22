@@ -4,118 +4,113 @@ import { runCheck } from './check';
 import { runPipeline } from './pipeline';
 import { runDeploy } from './deploy';
 import { runInit } from './init';
+import * as yargs from 'yargs';
+import { CommandModule } from 'yargs';
 
-require('yargs')
-  .command(
-    'tag <ref> <tag-name> [project]',
-    'creates new tags on configured projects',
-    yargs => {
-      yargs
-        .positional('ref', {
-          describe:
-            'git ref position where new tag should be located can be tag, branch or commit hash',
-        })
-        .positional('tag-name', {
-          describe: 'tag name to remove/delete',
-        })
-        .positional('project', {
-          default: 'all',
-          describe: 'name of affected project',
-        })
-        .option('await', {
-          alias: 'a',
-          type: 'boolean',
-          default: true,
-          description: 'awaits pipeline completion',
-        });
-      // .option('create', {
-      //   alias: 'c',
-      //   type: 'boolean',
-      //   default: true,
-      //   description: 'indicates new tag to be created',
-      // })
-      // .option('delete', {
-      //   alias: 'd',
-      //   type: 'boolean',
-      //   description: 'indicates tag to be deleted',
-      // });
-    },
-    argv => runTags(argv),
-  )
-  .command(
-    'check <ref> [project]',
-    'check status of pipeline',
-    yargs => {
-      yargs
-        .positional('ref', {
-          describe: 'git ref position can be tag, branch or hash',
-        })
-        .positional('project', {
-          default: 'all',
-          describe: 'name of affected project',
-        })
-        .option('await', {
-          alias: 'a',
-          type: 'boolean',
-          default: false,
-          description: 'awaits pipeline completion',
-        });
-    },
-    argv => runCheck(argv),
-  )
-  .command(
-    'pipeline <ref> [project]',
-    'trigger pipeline',
-    yargs => {
-      yargs
-        .positional('ref', {
-          describe: 'git ref position can be tag, branch or hash',
-        })
-        .positional('project', {
-          default: 'all',
-          describe: 'name of affected project',
-        })
-        .option('await', {
-          alias: 'a',
-          type: 'boolean',
-          default: true,
-          description: 'awaits pipeline completion',
-        });
-    },
-    argv => runPipeline(argv),
-  )
-  .command(
-    'deploy <ref> [stage] [project]',
-    'runs deploy pipelines',
-    yargs => {
-      yargs
-        .positional('ref', {
-          describe: 'git ref position what should be deployed',
-        })
-        .positional('stage', {
-          default: 'dev',
-          describe: 'name of stage job that will be triggered',
-        })
-        .positional('project', {
-          default: 'all',
-          describe: 'name of affected project',
-        })
-        .option('await', {
-          alias: 'a',
-          type: 'boolean',
-          default: true,
-          description: 'awaits pipeline completion',
-        });
-    },
-    argv => runDeploy(argv),
-  )
-  .command(
-    'init',
-    'Create configuration file',
-    yargs => {
-    },
-    argv => runInit(argv),
-  )
+const tagCommand: CommandModule = {
+  command: 'tag <ref> <tag-name> [project]',
+  describe: 'creates new tags on configured projects',
+  builder: yargs =>
+    yargs
+      .positional('ref', {
+        describe:
+          'git ref position where new tag should be located can be tag, branch or commit hash',
+        required: true,
+      })
+      .positional('tag-name', {
+        describe: 'tag name to remove/delete',
+      })
+      .positional('project', {
+        default: 'all',
+        describe: 'name of affected project',
+      })
+      .option('await', {
+        alias: 'a',
+        type: 'boolean',
+        default: true,
+        description: 'awaits pipeline completion',
+      }),
+  handler: argv => runTags(argv),
+};
+
+const checkCommand: CommandModule = {
+  command: 'check <ref> [project]',
+  describe: 'check status of pipeline',
+  builder: yargs =>
+    yargs
+      .positional('ref', {
+        describe: 'git ref position can be tag, branch or hash',
+      })
+      .positional('project', {
+        default: 'all',
+        describe: 'name of affected project',
+      })
+      .option('await', {
+        alias: 'a',
+        type: 'boolean',
+        default: false,
+        description: 'awaits pipeline completion',
+      }),
+  handler: argv => runCheck(argv),
+};
+
+const pipelineCommand: CommandModule = {
+  command: 'pipeline <ref> [project]',
+  describe: 'trigger pipeline',
+  builder: yargs =>
+    yargs
+      .positional('ref', {
+        describe: 'git ref position can be tag, branch or hash',
+      })
+      .positional('project', {
+        default: 'all',
+        describe: 'name of affected project',
+      })
+      .option('await', {
+        alias: 'a',
+        type: 'boolean',
+        default: true,
+        description: 'awaits pipeline completion',
+      }),
+  handler: argv => runPipeline(argv),
+};
+const deployCommand: CommandModule = {
+  command: 'deploy <ref> [stage] [project]',
+  describe: 'runs deploy pipelines',
+  builder: yargs =>
+    yargs
+      .positional('ref', {
+        describe: 'git ref position what should be deployed',
+      })
+      .positional('stage', {
+        default: 'dev',
+        describe: 'name of stage job that will be triggered',
+      })
+      .positional('project', {
+        default: 'all',
+        describe: 'name of affected project',
+      })
+      .option('await', {
+        alias: 'a',
+        type: 'boolean',
+        default: true,
+        description: 'awaits pipeline completion',
+      }),
+  handler: argv => runDeploy(argv),
+};
+
+const initCommand: CommandModule = {
+  command: 'init',
+  describe: 'Create configuration file',
+  handler: argv => runInit(argv),
+};
+
+yargs
+  .command(tagCommand)
+  .command(checkCommand)
+  .command(pipelineCommand)
+  .command(deployCommand)
+  .command(initCommand)
   .option('config', {
     type: 'string',
     default: 'config.yml',
@@ -126,8 +121,6 @@ require('yargs')
     global: false,
     describe: 'create new deployment configuration file',
   })
-  // .option("confirm-all", {
-  //   alias: "y",
-  //   description: ""
-  // })
+  .demandCommand(1, 'You need at least one command before moving on.')
+  .help()
   .version(packageInfo.version).argv;

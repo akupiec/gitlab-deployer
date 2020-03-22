@@ -5,7 +5,7 @@ export function validateConfig(config) {
   let isOk = 1;
   isOk &= !!config['base-api'];
   isOk &= config['base-api'].includes('http');
-  isOk &= config['base-api'].includes('gitlab');
+  isOk &= config['base-api'].includes('git');
   isOk &= config.projects != undefined;
   isOk &= config.deploy != undefined;
   isOk &= !!config['refresh-time'];
