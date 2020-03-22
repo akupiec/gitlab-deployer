@@ -1,8 +1,9 @@
-import { Config, Project, Yargs } from './common/config';
+import { Config, Project } from './common/Config';
 import { ScreenPrinter } from './console/ScreenPrinter';
-import { awaitPipelineCompletion, getPipeline, Pipeline } from './common/pipelines';
+import { awaitPipelineCompletion, getPipeline, IPipeline } from './common/pipelines';
 import { findJob, playJob, StatusCode } from './common/api';
-import { Job } from './common/job';
+import { IJob } from './common/iJob';
+import { Yargs } from './common/Yargs';
 
 export function runDeploy(args) {
   const yargs = new Yargs(args);
@@ -12,11 +13,11 @@ export function runDeploy(args) {
   const promises = config.projects.map(async function(project) {
     screenPrinter.addProject(project);
     screenPrinter.print();
-    const pipeline = await getPipeline(project, config, yargs.ref, screenPrinter) as Pipeline;
+    const pipeline = await getPipeline(project, config, yargs.ref, screenPrinter) as IPipeline;
     if (!pipeline.id) return;
-    const job = (await getJob(project, pipeline, config, screenPrinter)) as Job;
+    const job = (await getJob(project, pipeline, config, screenPrinter)) as IJob;
     if (!job.id) return;
-    const trigJob = await triggerJob(project, job, config, screenPrinter) as Job;
+    const trigJob = await triggerJob(project, job, config, screenPrinter) as IJob;
     if (!trigJob.id) return;
     return awaitComplete(project, config, yargs, screenPrinter);
   });
@@ -36,19 +37,19 @@ async function awaitComplete(
 
 export async function getJob(
   project: Project,
-  pipeline: Pipeline,
+  pipeline: IPipeline,
   config: Config,
   screenPrinter: ScreenPrinter,
-): Promise<StatusCode | Job> {
+): Promise<StatusCode | IJob> {
   const stage = config.getStage(project);
   const uri = config.uri;
   return findJob(uri, project.id, pipeline.id, stage).then(
     data => {
       if (!data) {
-        screenPrinter.setProjectWarn(project, 'Job Not Found');
+        screenPrinter.setProjectWarn(project, 'IJob Not Found');
         return StatusCode.Warn;
       } else {
-        screenPrinter.updateProjectSpinner(project, 'Job in progress...');
+        screenPrinter.updateProjectSpinner(project, 'IJob in progress...');
         return data;
       }
     },
@@ -59,10 +60,10 @@ export async function getJob(
   );
 }
 
-export async function triggerJob(project: Project, job: Job, config: Config, screenPrinter: ScreenPrinter) {
+export async function triggerJob(project: Project, job: IJob, config: Config, screenPrinter: ScreenPrinter) {
   return playJob(config.uri, project.id, job.id).then(
     (data) => {
-      screenPrinter.setProjectSuccess(project, 'Job Started');
+      screenPrinter.setProjectSuccess(project, 'IJob Started');
       return data;
     },
     err => {

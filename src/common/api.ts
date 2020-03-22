@@ -1,4 +1,4 @@
-import { Job } from './job';
+import { IJob } from './iJob';
 
 const axios = require('axios');
 
@@ -68,7 +68,7 @@ export function findJob(URI: string, projectId: number, pipelineId: string, jobN
   };
   return axios(options).then(resp => {
     if (!resp.data) return;
-    return resp.data.find((job: Job) => job.name.includes(jobName));
+    return resp.data.find((job: IJob) => job.name.includes(jobName));
   });
 }
 
