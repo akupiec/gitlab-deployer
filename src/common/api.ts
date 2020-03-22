@@ -9,7 +9,7 @@ export enum StatusCode {
 }
 
 const headers = {
-  'PRIVATE-TOKEN': process.env.DEPLOY_ACCESS_TEST,
+  'PRIVATE-TOKEN': process.env.GIT_ACCESS_TOKEN,
 };
 
 function getPipelines(URI: string, projectId: number) {

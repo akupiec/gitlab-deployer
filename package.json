@@ -2,7 +2,8 @@
   "name": "gitlab-deployer",
   "version": "1.0.0",
   "description": "GitLab deployment tool provides a set of useful functions for complex processes",
-  "main": "dist/index.js",
+  "main": "dist/gitlab-deployer",
+  "private": true,
   "scripts": {
     "build": "webpack -c webpack.config.js",
     "test": "npx ts-node src/index.ts --help"
@@ -21,6 +22,7 @@
   },
   "dependencies": {
     "@types/node": "^13.7.4",
+    "@types/yargs": "^15.0.4",
     "axios": "^0.19.2",
     "chalk": "^3.0.0",
     "inquirer": "^7.0.4",

@@ -16,23 +16,13 @@ module.exports = {
     filename: 'gitlab-deployer',
     path: path.resolve(__dirname, 'dist'),
   },
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
-          filename: 'vendors.js',
-        },
-      },
-    },
-    nodeEnv: 'production',
-  },
   plugins: [
     new webpack.BannerPlugin({
       banner: '#!/usr/bin/env node',
       raw: true,
     }),
   ],
+  stats: {
+    warningsFilter: [/node_modules\/yargs/],
+  },
 };
