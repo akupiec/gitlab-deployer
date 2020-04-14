@@ -2,6 +2,7 @@ import { Config, Project } from './Config';
 import { ScreenPrinter } from '../console/ScreenPrinter';
 import { getPipelineByRef, StatusCode } from './api';
 import { sleep } from './sleep';
+import { PIPELINES_PAGE_SIZE } from '../costansts';
 
 export interface IPipeline {
   id: string;
@@ -18,7 +19,7 @@ export async function getPipeline(
   return getPipelineByRef(config.uri, project.id, ref).then(
     data => {
       if (!data) {
-        screenPrinter.setProjectWarn(project, 'Pipeline Not Found');
+        screenPrinter.setProjectWarn(project, `Not Found in last ${PIPELINES_PAGE_SIZE} triggered pipelines`);
         return StatusCode.Warn;
       } else {
         screenPrinter.updateProjectSpinner(project, 'Pipeline in progress...');

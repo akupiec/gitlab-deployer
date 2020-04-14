@@ -1,4 +1,5 @@
 import { IJob } from './iJob';
+import { PIPELINES_PAGE_SIZE } from '../costansts';
 
 const axios = require('axios');
 
@@ -13,7 +14,7 @@ const headers = {
 };
 
 function getPipelines(URI: string, projectId: number) {
-  const url = `${URI}/projects/${projectId}/pipelines`;
+  const url = `${URI}/projects/${projectId}/pipelines?per_page=${PIPELINES_PAGE_SIZE}`;
   const options = {
     url,
     method: 'get',
