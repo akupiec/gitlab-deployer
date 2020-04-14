@@ -8,6 +8,8 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## unreleased
 ### Changed
 - number of checked pipelines when searching for given ref
+### Fixed
+- trigger job api
 
 ## 1.0.0 - 2020-03-22
 

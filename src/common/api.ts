@@ -74,7 +74,7 @@ export function findJob(URI: string, projectId: number, pipelineId: string, jobN
 }
 
 export function playJob(URI: string, projectId: number, jobId: string) {
-  const url = `${URI}/projects/${projectId}/jobs/${jobId}/retry`;
+  const url = `${URI}/projects/${projectId}/jobs/${jobId}/play`;
   const options = {
     url,
     method: 'post',
