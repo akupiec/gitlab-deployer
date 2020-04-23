@@ -10,6 +10,7 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 - number of checked pipelines when searching for given ref
 ### Fixed
 - trigger job api
+- yargs help print now detects tty width
 
 ## 1.0.0 - 2020-03-22
 

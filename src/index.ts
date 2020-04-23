@@ -105,6 +105,7 @@ const initCommand: CommandModule = {
   handler: argv => runInit(argv),
 };
 
+const ttyWidth = process.stdout.columns || 80;
 yargs
   .command(tagCommand)
   .command(checkCommand)
@@ -122,5 +123,6 @@ yargs
     describe: 'create new deployment configuration file',
   })
   .demandCommand(1, 'You need at least one command before moving on.')
+  .wrap(ttyWidth)
   .help()
   .version(packageInfo.version).argv;
