@@ -1,58 +1,30 @@
 import { Project } from '../common/Config';
-import { initConsole } from './consoleUtils';
-import { LOGO_HEIGHT } from './logo';
-import * as chalk from 'chalk';
-import { Spinner } from '../spinner';
-
-enum LineType {
-  String,
-  Spinner,
-}
-
-interface LineData {
-  yOffset: number;
-  type?: LineType;
-  message?: any;
-  lineObj?: Spinner;
-}
+import chalk from 'chalk';
+import { Instance, render } from 'ink';
+import { InkPainter } from './InkPainter';
+import { createElement } from 'react';
+import { LineData, LineType } from './Interfaces';
 
 export class ScreenPrinter {
   private projectsLines: Map<Project, LineData> = new Map();
-  private nextOffset = LOGO_HEIGHT;
+  private ink: Instance;
 
   constructor() {
-    initConsole();
-  }
-
-  private static clearOldData(data: LineData) {
-    if (data.type === LineType.Spinner) {
-      data.lineObj.stop();
-      data.lineObj = undefined;
-    }
-  }
-
-  private static handlePrintSpinner(value: LineData) {
-    if (value.type === LineType.Spinner && !value.lineObj.isSpinning()) {
-      process.stdout.cursorTo(0, value.yOffset + 1);
-      process.stdout.clearLine(0);
-      value.lineObj.start(4, value.yOffset + 1);
-    }
+    this.ink = render(
+      createElement(InkPainter, { name: 'deployer', projects: this.projectsLines }),
+      { experimental: true },
+    );
   }
 
   addProject(project: Project) {
-    this.nextOffset += 2;
-    this.projectsLines.set(project, {
-      yOffset: this.nextOffset,
-    });
+    this.projectsLines.set(project, {});
     return this;
   }
 
   setProjectSpinner(project: Project, message: string) {
     const data = this.projectsLines.get(project);
-    ScreenPrinter.clearOldData(data);
     data.message = message;
     data.type = LineType.Spinner;
-    data.lineObj = new Spinner(message, ['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷'], 250);
     this.projectsLines.set(project, data);
     this.print();
     return this;
@@ -72,7 +44,6 @@ export class ScreenPrinter {
 
   setProjectMessage(project: Project, message: string) {
     const data = this.projectsLines.get(project);
-    ScreenPrinter.clearOldData(data);
     data.message = message;
     data.type = LineType.String;
     this.projectsLines.set(project, data);
@@ -80,38 +51,20 @@ export class ScreenPrinter {
     return this;
   }
 
-  stopProjectSpinner(project: Project) {
-    const data = this.projectsLines.get(project);
-    ScreenPrinter.clearOldData(data);
-  }
-
-  private static handlePrintString(value: LineData, key: Project) {
-    if (value.type === LineType.String) {
-      console.log(`      ${value.message}`);
-      return;
-    }
-  }
-
   print() {
-    this.projectsLines.forEach((value, key) => {
-      process.stdout.cursorTo(0, value.yOffset);
-      console.log(`===== ${key.name} =====`);
-      ScreenPrinter.handlePrintString(value, key);
-      ScreenPrinter.handlePrintSpinner(value);
-    });
+    this.ink.rerender(
+      createElement(InkPainter, { name: 'deployer', projects: this.projectsLines }),
+    );
   }
 
-  public updateProjectSpinner(project: Project, message: string) {
-    const data = this.projectsLines.get(project);
-    if (data.type === LineType.Spinner) {
-      data.lineObj.message(message);
-    }
-  }
-
-  public onEnd(promises: Promise<void>[]) {
+  onEnd(promises: Promise<void>[]) {
     Promise.all(promises).then(
-      () => console.log(chalk.green('[Success] ') + 'All done!'),
+      () => {
+        this.ink.unmount();
+        console.log(chalk.green('[Success] ') + 'All done!');
+      },
       err => {
+        this.ink.unmount();
         console.log(chalk.red('[Error] ') + 'Something went wrong!' + err);
       },
     );

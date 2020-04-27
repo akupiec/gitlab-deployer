@@ -22,7 +22,7 @@ export async function getPipeline(
         screenPrinter.setProjectWarn(project, `Not Found in last ${PIPELINES_PAGE_SIZE} triggered pipelines`);
         return StatusCode.Warn;
       } else {
-        screenPrinter.updateProjectSpinner(project, 'Pipeline in progress...');
+        screenPrinter.setProjectSpinner(project, 'Pipeline in progress...');
         return data;
       }
     },
@@ -51,7 +51,7 @@ export async function awaitPipelineCompletion(
       (resp as IPipeline).status === 'success';
 
     if ((resp as IPipeline).status === 'pending') {
-      screenPrinter.updateProjectSpinner(project, 'Pipeline in progress...');
+      screenPrinter.setProjectSpinner(project, 'Pipeline in progress...');
     }
   }
   if (resp !== StatusCode.Error && resp !== StatusCode.Warn) {

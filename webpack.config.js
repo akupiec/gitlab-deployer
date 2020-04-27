@@ -7,10 +7,18 @@ module.exports = {
   mode: 'production',
   devtool: false,
   module: {
-    rules: [{ test: /\.ts?$/, loader: 'ts-loader' }],
+    rules: [{ test: /\.tsx?$/, loader: 'ts-loader', exclude: /node_modules/ },
+      {
+        test: /node_modules\/cfonts.*constants\.js$/,
+        loader: 'string-replace-loader',
+        options: {
+          search: 'path.normalize(`${__dirname}/../package.json`)',
+          replace: `'../package.json'`,
+        },
+      }],
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
     filename: 'gitlab-deployer',

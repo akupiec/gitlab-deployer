@@ -49,7 +49,7 @@ export async function getJob(
         screenPrinter.setProjectWarn(project, 'IJob Not Found');
         return StatusCode.Warn;
       } else {
-        screenPrinter.updateProjectSpinner(project, 'IJob in progress...');
+        screenPrinter.setProjectSpinner(project, 'IJob in progress...');
         return data;
       }
     },

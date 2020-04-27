@@ -11,6 +11,7 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Fixed
 - trigger job api
 - yargs help print now detects tty width
+- various tty printing errors unfortunately this introduced high CPU usage (Ink library)
 
 ## 1.0.0 - 2020-03-22
 

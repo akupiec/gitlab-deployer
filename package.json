@@ -17,20 +17,26 @@
     "cli"
   ],
   "devDependencies": {
-    "prettier": "^1.19.1",
-    "ts-node": "^8.6.2"
-  },
-  "dependencies": {
     "@types/node": "^13.7.4",
+    "@types/react": "^16.9.34",
     "@types/yargs": "^15.0.4",
-    "axios": "^0.19.2",
-    "chalk": "^3.0.0",
-    "inquirer": "^7.0.4",
-    "inquirer-autocomplete-prompt": "^1.0.2",
+    "prettier": "^1.19.1",
+    "string-replace-loader": "^2.3.0",
     "ts-loader": "^6.2.1",
+    "ts-node": "^8.6.2",
     "typescript": "^3.8.2",
     "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.11",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "chalk": "^3.0.0",
+    "ink": "^2.7.1",
+    "ink-big-text": "^1.0.1",
+    "ink-spinner": "^3.0.1",
+    "inquirer": "^7.0.4",
+    "inquirer-autocomplete-prompt": "^1.0.2",
+    "react": "^16.13.1",
     "yaml": "^1.7.2",
     "yargs": "^15.1.0"
   }
