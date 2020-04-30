@@ -17,24 +17,16 @@ function _runPerProject(screenPrinter: ScreenPrinter, config: Config, yargs: Yar
   return async function(project) {
     screenPrinter.addProject(project);
     screenPrinter.print();
-    await checkStatus(project, config, yargs, screenPrinter);
-    return awaitComplete(project, config, yargs, screenPrinter);
+    if (yargs.await) {
+      return await awaitPipelineCompletion(project, config, yargs.ref, screenPrinter);
+    } else {
+      return await checkStatus(project, config, yargs, screenPrinter);
+    }
   };
-}
-
-async function awaitComplete(
-  project: Project,
-  config: Config,
-  yargs: Yargs,
-  screenPrinter: ScreenPrinter,
-) {
-  if (!yargs.await) return;
-  await awaitPipelineCompletion(project, config, yargs.ref, screenPrinter);
 }
 
 async function checkStatus(project: Project, config: Config, yargs: Yargs, painter: ScreenPrinter) {
   painter.setProjectSpinner(project, 'Searching pipeline...');
-  if (yargs.await) return;
 
   const resp = await getPipeline(project, config, yargs.ref, painter);
   const data = resp.data;
@@ -42,4 +34,5 @@ async function checkStatus(project: Project, config: Config, yargs: Yargs, paint
     const msg = `Pipeline status: ${data.status} last update ${data.created_at}`;
     painter.setProjectSuccess(project, msg);
   }
+  return resp;
 }

@@ -1,7 +1,7 @@
 import { Config, Project } from '../common/Config';
 import { ScreenPrinter } from '../console/ScreenPrinter';
 import { awaitPipelineCompletion } from '../common/pipelines';
-import { createPipeline, StatusCode } from '../common/api';
+import { createPipeline, Response, StatusCode } from '../common/api';
 import { Yargs } from '../common/Yargs';
 
 export function runPipeline(args) {
@@ -13,22 +13,13 @@ export function runPipeline(args) {
     screenPrinter.addProject(project);
     screenPrinter.print();
     const resp = await triggerPipeline(project, config, yargs, screenPrinter);
-    if (resp === StatusCode.Success) {
-      return awaitComplete(project, config, yargs, screenPrinter);
+    if (resp.status === StatusCode.Success && yargs.await) {
+      return await awaitPipelineCompletion(project, config, yargs.ref, screenPrinter);
     }
+    return resp;
   });
 
   screenPrinter.onEnd(promises);
-}
-
-async function awaitComplete(
-  project: Project,
-  config: Config,
-  yargs: Yargs,
-  screenPrinter: ScreenPrinter,
-) {
-  if (!yargs.await) return;
-  await awaitPipelineCompletion(project, config, yargs.ref, screenPrinter);
 }
 
 function triggerPipeline(
@@ -36,15 +27,20 @@ function triggerPipeline(
   config: Config,
   yargs: Yargs,
   screenPrinter: ScreenPrinter,
-) {
+): Promise<Response<any>> {
   return createPipeline(config.uri, project.id, yargs.ref).then(
-    () => {
+    data => {
       screenPrinter.setProjectSuccess(project, 'Pipeline crated');
-      return StatusCode.Success;
+      return {
+        status: StatusCode.Success,
+        data,
+      };
     },
     err => {
       screenPrinter.setProjectError(project, 'Pipeline not created ' + err);
-      return StatusCode.Error;
+      return {
+        status: StatusCode.Error,
+      };
     },
   );
 }

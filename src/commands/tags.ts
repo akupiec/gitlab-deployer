@@ -1,6 +1,6 @@
 import { Config, Project } from '../common/Config';
 import { ScreenPrinter } from '../console/ScreenPrinter';
-import { createTagOnRef, StatusCode } from '../common/api';
+import { createTagOnRef, Response, StatusCode } from '../common/api';
 import { awaitPipelineCompletion } from '../common/pipelines';
 import { Yargs } from '../common/Yargs';
 
@@ -12,33 +12,37 @@ export function runTags(args) {
   const promises = config.projects.map(async function(project) {
     screenPrinter.addProject(project);
     screenPrinter.print();
-    await crateTag(project, config, yargs, screenPrinter);
-    return awaitComplete(project, config, yargs, screenPrinter);
+    const tag = await crateTag(project, config, yargs, screenPrinter);
+    if (yargs.await) {
+      return await awaitPipelineCompletion(project, config, yargs.tagName, screenPrinter);
+    }
+    return tag;
   });
 
   screenPrinter.onEnd(promises);
 }
 
-async function awaitComplete(
+async function crateTag(
   project: Project,
   config: Config,
   yargs: Yargs,
   screenPrinter: ScreenPrinter,
-) {
-  if (!yargs.await) return;
-  await awaitPipelineCompletion(project, config, yargs.tagName, screenPrinter);
-}
-
-async function crateTag(project: Project, config: Config, yargs: Yargs, screenPrinter: ScreenPrinter) {
+): Promise<Response<any>> {
   screenPrinter.setProjectMessage(project, 'Creating Tag');
   return createTagOnRef(config.uri, project.id, yargs.tagName, yargs.ref).then(
     () => {
       screenPrinter.setProjectSuccess(project, 'New Tag crated');
-      return StatusCode.Success;
+      return {
+        status: StatusCode.Success,
+      };
     },
     error => {
-      screenPrinter.setProjectError(project, 'Cant create tag (already exists ?): ' + error);
-      return StatusCode.Error;
+      const message = 'Cant create tag (already exists ?): ' + error;
+      screenPrinter.setProjectError(project, message);
+      return {
+        status: StatusCode.Error,
+        message,
+      };
     },
   );
 }

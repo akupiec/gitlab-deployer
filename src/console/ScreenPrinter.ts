@@ -4,6 +4,7 @@ import { Instance, render } from 'ink';
 import { InkPainter } from './InkPainter';
 import { createElement } from 'react';
 import { LineData, LineType } from './Interfaces';
+import { Response, StatusCode } from '../common/api';
 
 export class ScreenPrinter {
   private projectsLines: Map<Project, LineData> = new Map();
@@ -57,11 +58,17 @@ export class ScreenPrinter {
     );
   }
 
-  onEnd(promises: Promise<void>[]) {
+  onEnd(promises: Promise<Response<any>>[]) {
     Promise.all(promises).then(
-      () => {
+      resp => {
         this.ink.unmount();
-        console.log(chalk.green('[Success] ') + 'All done!');
+        if (resp.every(r => r.status === StatusCode.Success)) {
+          console.log(chalk.green('[Success] ') + 'All done!' + resp);
+        } else if (resp.some(r => r.status === StatusCode.Error)) {
+          console.log(chalk.red('[Error] ') + 'Something went wrong!');
+        } else {
+          console.log(chalk.red('[Warn] ') + 'Something went wrong!');
+        }
       },
       err => {
         this.ink.unmount();

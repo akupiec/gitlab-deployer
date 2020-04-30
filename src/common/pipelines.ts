@@ -1,6 +1,6 @@
 import { Config, Project } from './Config';
 import { ScreenPrinter } from '../console/ScreenPrinter';
-import { getPipelineByRef, StatusCode } from './api';
+import { getPipelineByRef, Response, StatusCode } from './api';
 import { sleep } from './sleep';
 import { PIPELINES_PAGE_SIZE } from '../costansts';
 
@@ -8,12 +8,6 @@ export interface IPipeline {
   id: string;
   status: string;
   created_at: string;
-}
-
-export interface Response<T> {
-  status: StatusCode;
-  message?: string;
-  data?: T;
 }
 
 export async function getPipeline(
@@ -46,7 +40,7 @@ export async function awaitPipelineCompletion(
   config: Config,
   ref: string,
   screenPrinter: ScreenPrinter,
-) {
+): Promise<Response<any>> {
   screenPrinter.setProjectSpinner(project, 'Awaiting pipeline...');
   let resp;
   while (1) {
@@ -59,11 +53,15 @@ export async function awaitPipelineCompletion(
       screenPrinter.setProjectSuccess(project, 'Pipeline done!');
       break;
     } else if (resp.status === StatusCode.Success) {
-      screenPrinter.setProjectError(project, `Pipeline status: ${resp.data.status}`);
+      const message = `Pipeline status: ${resp.data.status}`;
+      screenPrinter.setProjectError(project, message);
+      resp.status = StatusCode.Error;
+      resp.message = message;
       break;
     } else {
       break;
     }
     await sleep(config.refreshTime);
   }
+  return resp;
 }

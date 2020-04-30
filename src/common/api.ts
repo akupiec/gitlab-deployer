@@ -9,6 +9,12 @@ export enum StatusCode {
   Warn,
 }
 
+export interface Response<T> {
+  status: StatusCode;
+  message?: string;
+  data?: T;
+}
+
 const headers = {
   'PRIVATE-TOKEN': process.env.GIT_ACCESS_TOKEN,
 };

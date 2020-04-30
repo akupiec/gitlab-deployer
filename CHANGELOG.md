@@ -9,6 +9,7 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Changed
 - number of checked pipelines when searching for given ref
 - pipelines now return actual status
+- overall summery now return actual status
 ### Fixed
 - trigger job api
 - yargs help print now detects tty width
