@@ -1,8 +1,8 @@
-import { Config, Project } from './common/Config';
-import { ScreenPrinter } from './console/ScreenPrinter';
-import { awaitPipelineCompletion } from './common/pipelines';
-import { createPipeline, StatusCode } from './common/api';
-import { Yargs } from './common/Yargs';
+import { Config, Project } from '../common/Config';
+import { ScreenPrinter } from '../console/ScreenPrinter';
+import { awaitPipelineCompletion } from '../common/pipelines';
+import { createPipeline, StatusCode } from '../common/api';
+import { Yargs } from '../common/Yargs';
 
 export function runPipeline(args) {
   const yargs = new Yargs(args);

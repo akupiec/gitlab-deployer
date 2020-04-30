@@ -1,9 +1,9 @@
 import * as packageInfo from '../package.json';
-import { runTags } from './tags';
-import { runCheck } from './check';
-import { runPipeline } from './pipeline';
-import { runDeploy } from './deploy';
-import { runInit } from './init';
+import { runTags } from './commands/tags';
+import { runCheck } from './commands/check';
+import { runPipeline } from './commands/pipeline';
+import { runDeploy } from './commands/deploy';
+import { runInit } from './commands/init';
 import * as yargs from 'yargs';
 import { CommandModule } from 'yargs';
 

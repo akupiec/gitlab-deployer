@@ -1,9 +1,9 @@
-import { Project } from './common/Config';
+import { Project } from '../common/Config';
 import * as fs from 'fs';
 import * as chalk from 'chalk';
-import * as packageInfo from '../package.json';
-import { findProject } from './common/api';
-import { Yargs } from './common/Yargs';
+import * as packageInfo from '../../package.json';
+import { findProject } from '../common/api';
+import { Yargs } from '../common/Yargs';
 
 var inquirer = require('inquirer');
 inquirer.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));

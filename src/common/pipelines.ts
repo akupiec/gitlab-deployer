@@ -10,25 +10,33 @@ export interface IPipeline {
   created_at: string;
 }
 
+export interface Response<T> {
+  status: StatusCode;
+  message?: string;
+  data?: T;
+}
+
 export async function getPipeline(
   project: Project,
   config: Config,
   ref: string,
-  screenPrinter: ScreenPrinter,
-): Promise<StatusCode | IPipeline> {
+  printer: ScreenPrinter,
+): Promise<Response<IPipeline>> {
   return getPipelineByRef(config.uri, project.id, ref).then(
     data => {
       if (!data) {
-        screenPrinter.setProjectWarn(project, `Not Found in last ${PIPELINES_PAGE_SIZE} triggered pipelines`);
-        return StatusCode.Warn;
-      } else {
-        screenPrinter.setProjectSpinner(project, 'Pipeline in progress...');
-        return data;
+        const message = `Not Found in last ${PIPELINES_PAGE_SIZE} triggered pipelines`;
+        printer.setProjectWarn(project, message);
+        return { status: StatusCode.Warn, message };
       }
+      return {
+        status: StatusCode.Success,
+        data: data,
+      };
     },
     error => {
-      screenPrinter.setProjectError(project, error.message);
-      return StatusCode.Error;
+      printer.setProjectError(project, error.message);
+      return { status: StatusCode.Error, message: error.message };
     },
   );
 }
@@ -40,22 +48,22 @@ export async function awaitPipelineCompletion(
   screenPrinter: ScreenPrinter,
 ) {
   screenPrinter.setProjectSpinner(project, 'Awaiting pipeline...');
-  let isCompleted = false;
   let resp;
-  while (!isCompleted) {
-    await sleep(config.refreshTime);
+  while (1) {
     resp = await getPipeline(project, config, ref, screenPrinter);
-    isCompleted =
-      resp === StatusCode.Error ||
-      resp === StatusCode.Warn ||
-      (resp as IPipeline).status === 'success';
-
-    if ((resp as IPipeline).status === 'pending') {
-      screenPrinter.setProjectSpinner(project, 'Pipeline in progress...');
+    if (resp.status === StatusCode.Success && resp.data.status === 'pending') {
+      screenPrinter.setProjectSpinner(project, 'Pipeline pending...');
+    } else if (resp.status === StatusCode.Success && resp.data.status === 'running') {
+      screenPrinter.setProjectSpinner(project, 'Pipeline running...');
+    } else if (resp.status === StatusCode.Success && resp.data.status === 'success') {
+      screenPrinter.setProjectSuccess(project, 'Pipeline done!');
+      break;
+    } else if (resp.status === StatusCode.Success) {
+      screenPrinter.setProjectError(project, `Pipeline status: ${resp.data.status}`);
+      break;
+    } else {
+      break;
     }
-  }
-  if (resp !== StatusCode.Error && resp !== StatusCode.Warn) {
-    screenPrinter.setProjectSuccess(project, 'Congrats! Pipeline done!');
+    await sleep(config.refreshTime);
   }
 }
-
