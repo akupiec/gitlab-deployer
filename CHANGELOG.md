@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## unreleased
+## 1.0.1 - 2020-05-07
 ### Changed
 - number of checked pipelines when searching for given ref
 - pipelines now return actual status
