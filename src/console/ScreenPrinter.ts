@@ -63,7 +63,7 @@ export class ScreenPrinter {
       resp => {
         this.ink.unmount();
         if (resp.every(r => r.status === StatusCode.Success)) {
-          console.log(chalk.green('[Success] ') + 'All done!' + resp);
+          console.log(chalk.green('[Success] ') + 'All done!');
         } else if (resp.some(r => r.status === StatusCode.Error)) {
           console.log(chalk.red('[Error] ') + 'Something went wrong!');
         } else {

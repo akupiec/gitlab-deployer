@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## 1.0.2 - 2020-05-15
+### Features
+- init: search for projects is now limited to user membership
+### Fixes
+- print message on success
+
 ## 1.0.1 - 2020-05-07
 ### Changed
 - number of checked pipelines when searching for given ref

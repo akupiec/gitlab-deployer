@@ -100,6 +100,7 @@ export function findProject(URI: string, search: string) {
     headers,
     params: {
       search: search,
+      membership: true,
     },
   };
   return axios(options).then(resp => {
