@@ -5,18 +5,18 @@ import { IJob } from '../common/iJob';
 import { IPipeline } from '../common/iPipeline';
 
 export class Job extends PipelineCommand {
-  protected async runPerProject<T>(project: Project): Promise<Response<T>> {
-    const deployPromise = await this.job(project);
+  protected async runPerProject(project: Project) {
+    const pipeline = await this.getPipeline(project, this.yargs.ref);
+    const deployPromise = await this.job(pipeline, project);
 
     if (this.yargs.await && deployPromise.status === StatusCode.Success) {
-      return await this.awaitPipelineCompletion(project, this.yargs.ref);
+      return await this.awaitPipelineCompletion(project, pipeline.data);
     } else {
       return deployPromise;
     }
   }
 
-  private async job(project: Project) {
-    const pipeline = await this.getPipeline(project, this.yargs.ref);
+  private async job(pipeline: Response<IPipeline>, project: Project) {
     if (pipeline.status !== StatusCode.Success || !pipeline.data.id) {
       return pipeline;
     }

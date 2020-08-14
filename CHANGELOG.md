@@ -9,6 +9,7 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Features
 - new aliases for pipeline & deploy
 - increased pipeline lookout to 1000
+- optimized pipeline status check
 
 ## 1.0.2 - 2020-05-15
 ### Features

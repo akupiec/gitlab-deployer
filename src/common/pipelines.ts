@@ -1,5 +1,5 @@
 import { Project } from './Config';
-import { Response, StatusCode } from './api';
+import { getPipeline, Response, StatusCode } from './api';
 import { sleep } from './sleep';
 import { PIPELINES_CHECK_SIZE } from '../costansts';
 import { CommandRunner } from '../commands/CommandRunner';
@@ -27,29 +27,43 @@ export abstract class PipelineCommand extends CommandRunner {
     );
   }
 
-  protected async awaitPipelineCompletion(project: Project, ref: string): Promise<Response<any>> {
+  protected async awaitPipelineCompletion(
+    project: Project,
+    pipeline: IPipeline,
+  ): Promise<Response<IPipeline>> {
     this.screenPrinter.setProjectSpinner(project, 'Awaiting pipeline...');
-    let resp;
+    let resp: IPipeline;
+    let lastMessage;
+    let lastStatus;
+
     while (1) {
-      resp = await this.getPipeline(project, ref);
-      if (resp.status === StatusCode.Success && resp.data.status === 'pending') {
+      resp = await getPipeline(this.config.uri, project.id, pipeline.id);
+      if (resp.status === 'pending') {
         this.screenPrinter.setProjectSpinner(project, 'Pipeline pending...');
-      } else if (resp.status === StatusCode.Success && resp.data.status === 'running') {
+      } else if (resp.status === 'running') {
         this.screenPrinter.setProjectSpinner(project, 'Pipeline running...');
-      } else if (resp.status === StatusCode.Success && resp.data.status === 'success') {
+      } else if (resp.status === 'success') {
         this.screenPrinter.setProjectSuccess(project, 'Pipeline done!');
+        lastMessage = 'Pipeline done!';
+        lastStatus = StatusCode.Success;
         break;
-      } else if (resp.status === StatusCode.Success) {
-        const message = `Pipeline status: ${resp.data.status}`;
+      } else if (resp.status) {
+        const message = `Pipeline status: ${resp.status}`;
         this.screenPrinter.setProjectError(project, message);
-        resp.status = StatusCode.Error;
-        resp.message = message;
+        lastMessage = message;
+        lastStatus = StatusCode.Error;
         break;
       } else {
+        lastMessage = 'Pipeline not Found!';
+        lastStatus = StatusCode.Error;
         break;
       }
       await sleep(this.config.refreshTime);
     }
-    return resp;
+    return {
+      message: lastMessage,
+      status: lastStatus,
+      data: resp,
+    };
   }
 }

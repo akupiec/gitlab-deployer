@@ -34,6 +34,20 @@ export function getPipelines(
   return axios(options).then(resp => resp.data);
 }
 
+export function getPipeline(
+  URI: string,
+  projectId: number,
+  pipelineId: string,
+): Promise<IPipeline> {
+  const url = `${URI}/projects/${projectId}/pipelines/${pipelineId}`;
+  const options = {
+    url,
+    method: 'get',
+    headers,
+  };
+  return axios(options).then(resp => resp.data);
+}
+
 export function getPipelineJobs(URI: string, projectId: number, pipelineId: string) {
   const url = `${URI}/projects/${projectId}/pipelines/${pipelineId}/jobs`;
   const options = {
@@ -59,7 +73,7 @@ export function createTagOnRef(URI: string, projectId: number, tagName: string, 
   return axios(options).then(resp => resp.data);
 }
 
-export function createPipeline(URI: string, projectId: number, ref: string) {
+export function createPipeline(URI: string, projectId: number, ref: string): Promise<IPipeline> {
   const url = `${URI}/projects/${projectId}/pipeline`;
   const options = {
     url,

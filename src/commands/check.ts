@@ -4,8 +4,9 @@ import { StatusCode } from '../common/api';
 
 export class Check extends PipelineCommand {
   protected async runPerProject(project: Project) {
+    const pipeline = await this.getPipeline(project, this.yargs.ref);
     if (this.yargs.await) {
-      return await this.awaitPipelineCompletion(project, this.yargs.ref);
+      return await this.awaitPipelineCompletion(project, pipeline.data);
     } else {
       return await this.checkStatus(project);
     }
