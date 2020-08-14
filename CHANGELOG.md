@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## Next
+### Features
+- new aliases for pipeline & deploy
+
 ## 1.0.2 - 2020-05-15
 ### Features
 - init: search for projects is now limited to user membership
@@ -22,7 +26,6 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 - various tty printing errors unfortunately this introduced high CPU usage (Ink library)
 
 ## 1.0.0 - 2020-03-22
-
 ### Features
 - creates new tag across multiple projects
 - awaiting completion of matching by git ref pipelines

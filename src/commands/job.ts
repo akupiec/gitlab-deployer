@@ -5,7 +5,7 @@ import { findJob, playJob, Response, StatusCode } from '../common/api';
 import { IJob } from '../common/iJob';
 import { Yargs } from '../common/Yargs';
 
-export function runDeploy(args) {
+export function runJob(args) {
   const yargs = new Yargs(args);
   const config = new Config(yargs);
   const screenPrinter = new ScreenPrinter();
@@ -13,7 +13,7 @@ export function runDeploy(args) {
   const promises = config.projects.map(async function(project) {
     screenPrinter.addProject(project);
     screenPrinter.print();
-    const deployPromise = await deploy(project, config, yargs, screenPrinter);
+    const deployPromise = await job(project, config, yargs, screenPrinter);
 
     if (yargs.await && deployPromise.status === StatusCode.Success) {
       return await awaitPipelineCompletion(project, config, yargs.ref, screenPrinter);
@@ -25,7 +25,7 @@ export function runDeploy(args) {
   screenPrinter.onEnd(promises);
 }
 
-async function deploy(project: Project, config: Config, yargs: Yargs, painter: ScreenPrinter) {
+async function job(project: Project, config: Config, yargs: Yargs, painter: ScreenPrinter) {
   const pipeline = await getPipeline(project, config, yargs.ref, painter);
   if (pipeline.status !== StatusCode.Success || !pipeline.data.id) {
     return pipeline;

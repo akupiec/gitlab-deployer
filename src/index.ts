@@ -2,7 +2,7 @@ import * as packageInfo from '../package.json';
 import { runTags } from './commands/tags';
 import { runCheck } from './commands/check';
 import { runPipeline } from './commands/pipeline';
-import { runDeploy } from './commands/deploy';
+import { runJob } from './commands/job';
 import { runInit } from './commands/init';
 import * as yargs from 'yargs';
 import { CommandModule } from 'yargs';
@@ -57,6 +57,7 @@ const checkCommand: CommandModule = {
 const pipelineCommand: CommandModule = {
   command: 'pipeline <ref> [project]',
   describe: 'trigger pipeline',
+  aliases: ['redeploy'],
   builder: yargs =>
     yargs
       .positional('ref', {
@@ -74,9 +75,10 @@ const pipelineCommand: CommandModule = {
       }),
   handler: argv => runPipeline(argv),
 };
-const deployCommand: CommandModule = {
-  command: 'deploy <ref> [stage] [project]',
-  describe: 'runs deploy pipelines',
+const jobCommand: CommandModule = {
+  command: 'job <ref> [stage] [project]',
+  describe: 'runs single pipeline job',
+  aliases: ['deploy'],
   builder: yargs =>
     yargs
       .positional('ref', {
@@ -96,7 +98,7 @@ const deployCommand: CommandModule = {
         default: true,
         description: 'awaits pipeline completion',
       }),
-  handler: argv => runDeploy(argv),
+  handler: argv => runJob(argv),
 };
 
 const initCommand: CommandModule = {
@@ -110,7 +112,7 @@ yargs
   .command(tagCommand)
   .command(checkCommand)
   .command(pipelineCommand)
-  .command(deployCommand)
+  .command(jobCommand)
   .command(initCommand)
   .option('config', {
     type: 'string',
