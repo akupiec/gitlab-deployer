@@ -1,8 +1,8 @@
 import * as packageInfo from '../package.json';
-import { runTags } from './commands/tags';
-import { runCheck } from './commands/check';
-import { runPipeline } from './commands/pipeline';
-import { runJob } from './commands/job';
+import { Tags } from './commands/tags';
+import { Check } from './commands/check';
+import { Pipeline } from './commands/pipeline';
+import { Job } from './commands/job';
 import { runInit } from './commands/init';
 import * as yargs from 'yargs';
 import { CommandModule } from 'yargs';
@@ -30,7 +30,9 @@ const tagCommand: CommandModule = {
         default: true,
         description: 'awaits pipeline completion',
       }),
-  handler: argv => runTags(argv),
+  handler: argv => {
+    new Tags(argv).run();
+  },
 };
 
 const checkCommand: CommandModule = {
@@ -51,7 +53,9 @@ const checkCommand: CommandModule = {
         default: false,
         description: 'awaits pipeline completion',
       }),
-  handler: argv => runCheck(argv),
+  handler: argv => {
+    new Check(argv).run();
+  },
 };
 
 const pipelineCommand: CommandModule = {
@@ -73,7 +77,7 @@ const pipelineCommand: CommandModule = {
         default: true,
         description: 'awaits pipeline completion',
       }),
-  handler: argv => runPipeline(argv),
+  handler: argv => new Pipeline(argv).run(),
 };
 const jobCommand: CommandModule = {
   command: 'job <ref> [stage] [project]',
@@ -98,7 +102,9 @@ const jobCommand: CommandModule = {
         default: true,
         description: 'awaits pipeline completion',
       }),
-  handler: argv => runJob(argv),
+  handler: argv => {
+    new Job(argv).run();
+  },
 };
 
 const initCommand: CommandModule = {

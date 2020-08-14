@@ -1,46 +1,39 @@
-import { Config, Project } from '../common/Config';
-import { ScreenPrinter } from '../console/ScreenPrinter';
-import { awaitPipelineCompletion } from '../common/pipelines';
+import { Project } from '../common/Config';
+import { PipelineCommand } from '../common/pipelines';
 import { createPipeline, Response, StatusCode } from '../common/api';
-import { Yargs } from '../common/Yargs';
 
-export function runPipeline(args) {
-  const yargs = new Yargs(args);
-  const config = new Config(yargs);
-  const screenPrinter = new ScreenPrinter();
+export class Pipeline extends PipelineCommand {
+  run() {
+    const promises = this.config.projects.map(async project => {
+      this.screenPrinter.addProject(project);
+      this.screenPrinter.print();
+      const resp = await this.triggerPipeline(project);
+      if (resp.status === StatusCode.Success && this.yargs.await) {
+        return await this.awaitPipelineCompletion(project, this.yargs.ref);
+      }
+      return resp;
+    });
 
-  const promises = config.projects.map(async function(project) {
-    screenPrinter.addProject(project);
-    screenPrinter.print();
-    const resp = await triggerPipeline(project, config, yargs, screenPrinter);
-    if (resp.status === StatusCode.Success && yargs.await) {
-      return await awaitPipelineCompletion(project, config, yargs.ref, screenPrinter);
-    }
-    return resp;
-  });
+    this.screenPrinter.onEnd(promises);
+  }
 
-  screenPrinter.onEnd(promises);
-}
-
-function triggerPipeline(
-  project: Project,
-  config: Config,
-  yargs: Yargs,
-  screenPrinter: ScreenPrinter,
-): Promise<Response<any>> {
-  return createPipeline(config.uri, project.id, yargs.ref).then(
-    data => {
-      screenPrinter.setProjectSuccess(project, 'Pipeline crated');
-      return {
-        status: StatusCode.Success,
-        data,
-      };
-    },
-    err => {
-      screenPrinter.setProjectError(project, 'Pipeline not created ' + err);
-      return {
-        status: StatusCode.Error,
-      };
-    },
-  );
+  private triggerPipeline(
+    project: Project,
+  ): Promise<Response<any>> {
+    return createPipeline(this.config.uri, project.id, this.yargs.ref).then(
+      data => {
+        this.screenPrinter.setProjectSuccess(project, 'Pipeline crated');
+        return {
+          status: StatusCode.Success,
+          data,
+        };
+      },
+      err => {
+        this.screenPrinter.setProjectError(project, 'Pipeline not created ' + err);
+        return {
+          status: StatusCode.Error,
+        };
+      },
+    );
+  }
 }
