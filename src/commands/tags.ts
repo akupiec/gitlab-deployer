@@ -19,7 +19,7 @@ export class Tags extends PipelineCommand {
         this.screenPrinter.setProjectSuccess(project, 'New Tag crated');
         return { status: StatusCode.Success };
       },
-      error => {
+      (error) => {
         const message = 'Cant create tag (already exists ?): ' + error;
         this.screenPrinter.setProjectError(project, message);
         return { status: StatusCode.Error, message };

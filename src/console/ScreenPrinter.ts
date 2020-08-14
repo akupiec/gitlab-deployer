@@ -60,17 +60,17 @@ export class ScreenPrinter {
 
   onEnd(promises: Promise<Response<any>>[]) {
     Promise.all(promises).then(
-      resp => {
+      (resp) => {
         this.ink.unmount();
-        if (resp.every(r => r.status === StatusCode.Success)) {
+        if (resp.every((r) => r.status === StatusCode.Success)) {
           console.log(chalk.green('[Success] ') + 'All done!');
-        } else if (resp.some(r => r.status === StatusCode.Error)) {
+        } else if (resp.some((r) => r.status === StatusCode.Error)) {
           console.log(chalk.red('[Error] ') + 'Something went wrong!');
         } else {
           console.log(chalk.red('[Warn] ') + 'Something went wrong!');
         }
       },
-      err => {
+      (err) => {
         this.ink.unmount();
         console.log(chalk.red('[Error] ') + 'Something went wrong!' + err);
       },

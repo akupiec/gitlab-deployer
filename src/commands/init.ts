@@ -47,7 +47,7 @@ function askData(data: string) {
       type: 'editor',
       default: data,
     })
-    .then(resp => resp.data);
+    .then((resp) => resp.data);
 }
 
 function askOpenEditor() {
@@ -58,12 +58,12 @@ function askOpenEditor() {
       type: 'confirm',
       default: false,
     })
-    .then(resp => resp.openEditor);
+    .then((resp) => resp.openEditor);
 }
 
 function mapProjects(projects: Project[]) {
   let ret = {};
-  projects.forEach(project => {
+  projects.forEach((project) => {
     ret[project.name.replace(' ', '_')] = project.id;
   });
   return ret;
@@ -71,9 +71,9 @@ function mapProjects(projects: Project[]) {
 
 function mapStages(projects: Project[], stages: string[], isGenericJobs: boolean) {
   let ret = {};
-  projects.forEach(project => {
+  projects.forEach((project) => {
     let projectStages = {};
-    stages.forEach(stage => {
+    stages.forEach((stage) => {
       projectStages[stage] = isGenericJobs ? stage : `job-name-for-${stage}`;
     });
     ret[project.name.replace(' ', '_')] = projectStages;
@@ -89,7 +89,7 @@ async function askIsJobsNamesGeneric() {
         'Is deployment jobs named like stages, ex.: "dev" stage will be triggered by "dev" job ',
       type: 'confirm',
     })
-    .then(resp => resp.isGenericJobs);
+    .then((resp) => resp.isGenericJobs);
 }
 
 async function askStages() {
@@ -99,10 +99,10 @@ async function askStages() {
       message: 'Provide deployment stages separated by comma',
       type: 'input',
       filter: function(input: string) {
-        return input.split(',').map(stage => stage.trim());
+        return input.split(',').map((stage) => stage.trim());
       },
     })
-    .then(resp => resp.stages);
+    .then((resp) => resp.stages);
 }
 
 async function askRefreshTime() {
@@ -113,7 +113,7 @@ async function askRefreshTime() {
       type: 'number',
       default: 10000,
     })
-    .then(resp => resp.refresh);
+    .then((resp) => resp.refresh);
 }
 
 function askBasicApi() {
@@ -133,7 +133,7 @@ function askBasicApi() {
         return true;
       },
     })
-    .then(resp => resp.data);
+    .then((resp) => resp.data);
 }
 
 function askNumberOfProjects() {
@@ -144,7 +144,7 @@ function askNumberOfProjects() {
       type: 'number',
       default: 4,
     })
-    .then(resp => resp.projectNumber);
+    .then((resp) => resp.projectNumber);
 }
 
 async function askProjects(url: string, num: number) {
@@ -155,8 +155,8 @@ async function askProjects(url: string, num: number) {
       message: 'Provide name of ' + i + ' project',
       type: 'autocomplete',
       source: function(answersSoFar, input) {
-        return findProject(url, input).then(resp =>
-          resp.map(project => ({
+        return findProject(url, input).then((resp) =>
+          resp.map((project) => ({
             name: project.name,
             value: project,
           })),

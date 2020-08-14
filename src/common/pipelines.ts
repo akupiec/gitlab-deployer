@@ -11,7 +11,7 @@ export abstract class PipelineCommand extends CommandRunner {
   protected getPipeline(project: Project, ref: string): Promise<Response<IPipeline>> {
     this.screenPrinter.setProjectSpinner(project, 'Searching pipeline...');
     return getPipelineByRef(this.config.uri, project.id, ref).then(
-      data => {
+      (data) => {
         if (!data) {
           const message = `Not Found in last ${PIPELINES_CHECK_SIZE} triggered pipelines`;
           this.screenPrinter.setProjectWarn(project, message);
@@ -22,7 +22,7 @@ export abstract class PipelineCommand extends CommandRunner {
           data: data,
         };
       },
-      error => {
+      (error) => {
         this.screenPrinter.setProjectError(project, error.message);
         return { status: StatusCode.Error, message: error.message };
       },

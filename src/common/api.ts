@@ -31,7 +31,7 @@ export function getPipelines(
     method: 'get',
     headers,
   };
-  return axios(options).then(resp => resp.data);
+  return axios(options).then((resp) => resp.data);
 }
 
 export function getPipeline(
@@ -45,7 +45,7 @@ export function getPipeline(
     method: 'get',
     headers,
   };
-  return axios(options).then(resp => resp.data);
+  return axios(options).then((resp) => resp.data);
 }
 
 export function getPipelineJobs(URI: string, projectId: number, pipelineId: string) {
@@ -55,7 +55,7 @@ export function getPipelineJobs(URI: string, projectId: number, pipelineId: stri
     method: 'get',
     headers,
   };
-  return axios(options).then(resp => resp.data);
+  return axios(options).then((resp) => resp.data);
 }
 
 export function createTagOnRef(URI: string, projectId: number, tagName: string, ref: string) {
@@ -70,7 +70,7 @@ export function createTagOnRef(URI: string, projectId: number, tagName: string, 
       ref: ref,
     },
   };
-  return axios(options).then(resp => resp.data);
+  return axios(options).then((resp) => resp.data);
 }
 
 export function createPipeline(URI: string, projectId: number, ref: string): Promise<IPipeline> {
@@ -84,7 +84,7 @@ export function createPipeline(URI: string, projectId: number, ref: string): Pro
       ref: ref,
     },
   };
-  return axios(options).then(resp => resp.data);
+  return axios(options).then((resp) => resp.data);
 }
 
 export function findJob(URI: string, projectId: number, pipelineId: string, jobName: string) {
@@ -94,7 +94,7 @@ export function findJob(URI: string, projectId: number, pipelineId: string, jobN
     method: 'get',
     headers,
   };
-  return axios(options).then(resp => {
+  return axios(options).then((resp) => {
     if (!resp.data) return;
     return resp.data.find((job: IJob) => job.name.includes(jobName));
   });
@@ -107,7 +107,7 @@ export function playJob(URI: string, projectId: number, jobId: string) {
     method: 'post',
     headers,
   };
-  return axios(options).then(resp => {
+  return axios(options).then((resp) => {
     return resp.data;
   });
 }
@@ -124,7 +124,7 @@ export function findProject(URI: string, search: string) {
       membership: true,
     },
   };
-  return axios(options).then(resp => resp.data);
+  return axios(options).then((resp) => resp.data);
 }
 
 export function createNewBranch(URI: string, projectId: number, ref: string, branchName: string) {
@@ -138,5 +138,5 @@ export function createNewBranch(URI: string, projectId: number, ref: string, bra
       ref: ref,
     },
   };
-  return axios(options).then(resp => resp.data);
+  return axios(options).then((resp) => resp.data);
 }

@@ -15,7 +15,7 @@ export abstract class CommandRunner {
   }
 
   public run() {
-    const promises = this.config.projects.map(async project => {
+    const promises = this.config.projects.map(async (project) => {
       this.screenPrinter.addProject(project);
       this.screenPrinter.print();
 

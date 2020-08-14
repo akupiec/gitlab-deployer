@@ -11,7 +11,7 @@ import { Branch } from './commands/branch';
 const tagCommand: CommandModule = {
   command: 'tag <ref> <tag-name> [project]',
   describe: 'creates new tags on configured projects',
-  builder: yargs =>
+  builder: (yargs) =>
     yargs
       .positional('ref', {
         describe:
@@ -31,7 +31,7 @@ const tagCommand: CommandModule = {
         default: true,
         description: 'awaits pipeline completion',
       }),
-  handler: argv => {
+  handler: (argv) => {
     new Tags(argv).run();
   },
 };
@@ -39,7 +39,7 @@ const tagCommand: CommandModule = {
 const branchCommand: CommandModule = {
   command: 'branch <ref> <branch-name> [project]',
   describe: 'creates new branch on configured projects',
-  builder: yargs =>
+  builder: (yargs) =>
     yargs
       .positional('ref', {
         describe: 'git ref position where new branch should be located',
@@ -58,7 +58,7 @@ const branchCommand: CommandModule = {
         default: true,
         description: 'awaits pipeline completion',
       }),
-  handler: argv => {
+  handler: (argv) => {
     new Branch(argv).run();
   },
 };
@@ -66,7 +66,7 @@ const branchCommand: CommandModule = {
 const checkCommand: CommandModule = {
   command: 'check <ref> [project]',
   describe: 'check status of pipeline',
-  builder: yargs =>
+  builder: (yargs) =>
     yargs
       .positional('ref', {
         describe: 'git ref position can be tag, branch or hash',
@@ -81,7 +81,7 @@ const checkCommand: CommandModule = {
         default: false,
         description: 'awaits pipeline completion',
       }),
-  handler: argv => {
+  handler: (argv) => {
     new Check(argv).run();
   },
 };
@@ -90,7 +90,7 @@ const pipelineCommand: CommandModule = {
   command: 'pipeline <ref> [project]',
   describe: 'trigger pipeline',
   aliases: ['redeploy'],
-  builder: yargs =>
+  builder: (yargs) =>
     yargs
       .positional('ref', {
         describe: 'git ref position can be tag, branch or hash',
@@ -105,13 +105,13 @@ const pipelineCommand: CommandModule = {
         default: true,
         description: 'awaits pipeline completion',
       }),
-  handler: argv => new Pipeline(argv).run(),
+  handler: (argv) => new Pipeline(argv).run(),
 };
 const jobCommand: CommandModule = {
   command: 'job <ref> [stage] [project]',
   describe: 'runs single pipeline job',
   aliases: ['deploy'],
-  builder: yargs =>
+  builder: (yargs) =>
     yargs
       .positional('ref', {
         describe: 'git ref position what should be deployed',
@@ -130,7 +130,7 @@ const jobCommand: CommandModule = {
         default: true,
         description: 'awaits pipeline completion',
       }),
-  handler: argv => {
+  handler: (argv) => {
     new Job(argv).run();
   },
 };
@@ -138,7 +138,7 @@ const jobCommand: CommandModule = {
 const initCommand: CommandModule = {
   command: 'init',
   describe: 'Create configuration file',
-  handler: argv => runInit(argv),
+  handler: (argv) => runInit(argv),
 };
 
 const ttyWidth = process.stdout.columns || 80;

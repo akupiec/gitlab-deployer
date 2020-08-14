@@ -8,8 +8,8 @@ function getPipelinesByRef(
   ref: string,
   page = 0,
 ): Promise<IPipeline[]> {
-  return getPipelines(URI, projectId, PIPELINES_PAGE_SIZE, page).then(data => {
-    return data.filter(t => t.ref === ref || String(t.sha).includes(ref));
+  return getPipelines(URI, projectId, PIPELINES_PAGE_SIZE, page).then((data) => {
+    return data.filter((t) => t.ref === ref || String(t.sha).includes(ref));
   });
 }
 

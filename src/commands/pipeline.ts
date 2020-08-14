@@ -14,14 +14,14 @@ export class Pipeline extends PipelineCommand {
 
   private triggerPipeline(project: Project): Promise<Response<IPipeline>> {
     return createPipeline(this.config.uri, project.id, this.yargs.ref).then(
-      data => {
+      (data) => {
         this.screenPrinter.setProjectSuccess(project, 'Pipeline crated');
         return {
           status: StatusCode.Success,
           data,
         };
       },
-      err => {
+      (err) => {
         this.screenPrinter.setProjectError(project, 'Pipeline not created ' + err);
         return {
           status: StatusCode.Error,

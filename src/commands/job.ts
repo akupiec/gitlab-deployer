@@ -34,7 +34,7 @@ export class Job extends PipelineCommand {
     const stage = this.config.getStage(project);
     const uri = this.config.uri;
     return findJob(uri, project.id, pipeline.id, stage).then(
-      data => {
+      (data) => {
         if (!data) {
           const message = 'IJob Not Found';
           this.screenPrinter.setProjectWarn(project, message);
@@ -49,7 +49,7 @@ export class Job extends PipelineCommand {
           data,
         };
       },
-      error => {
+      (error) => {
         this.screenPrinter.setProjectError(project, error.message);
         return {
           status: StatusCode.Error,
@@ -61,14 +61,14 @@ export class Job extends PipelineCommand {
 
   private async triggerJob(project: Project, job: IJob): Promise<Response<any>> {
     return playJob(this.config.uri, project.id, job.id).then(
-      data => {
+      (data) => {
         this.screenPrinter.setProjectSuccess(project, 'IJob Started');
         return {
           status: StatusCode.Success,
           data,
         };
       },
-      err => {
+      (err) => {
         this.screenPrinter.setProjectError(project, err.response.data.message);
         return {
           status: StatusCode.Error,

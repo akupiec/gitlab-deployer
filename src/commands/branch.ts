@@ -19,7 +19,7 @@ export class Branch extends PipelineCommand {
         this.screenPrinter.setProjectSuccess(project, 'New Branch crated');
         return { status: StatusCode.Success };
       },
-      error => {
+      (error) => {
         const message = 'Cant create branch (already exists ?): ' + error;
         this.screenPrinter.setProjectError(project, message);
         return { status: StatusCode.Error, message };
