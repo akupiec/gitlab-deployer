@@ -68,4 +68,14 @@ export abstract class PipelineCommand extends CommandRunner {
       data: resp,
     };
   }
+
+  protected async awaitForFuturePipe(project: Project, ref: string) {
+    this.screenPrinter.setProjectSpinner(project, 'Awaiting pipeline creation...');
+    await sleep(15000);
+    const pipeline = await this.getPipeline(project, ref);
+    if (pipeline.status !== StatusCode.Success) {
+      return pipeline;
+    }
+    return await this.awaitPipelineCompletion(project, pipeline.data);
+  }
 }

@@ -25,6 +25,10 @@ export class Yargs {
     return this._args.tagName;
   }
 
+  get branchName() {
+    return this._args.branchName;
+  }
+
   get project() {
     return this._args.project || 'all';
   }

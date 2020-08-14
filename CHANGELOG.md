@@ -5,14 +5,15 @@ All notable changes to this project will be documented in this file.
 Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## Next
+## 1.1.0 - 2020-08-14
 ### Features
 - new aliases for pipeline & deploy
 - increased pipeline lookout to 1000
+- new command to create branch
+### Fixes
 - optimized pipeline status check
 - dummy await 15s delay for tag check status
 - better pipeline searching
-### Bugfix
 - warn when on check pipeline is not success
 
 ## 1.0.2 - 2020-05-15

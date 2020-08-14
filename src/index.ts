@@ -6,6 +6,7 @@ import { Job } from './commands/job';
 import { runInit } from './commands/init';
 import * as yargs from 'yargs';
 import { CommandModule } from 'yargs';
+import { Branch } from './commands/branch';
 
 const tagCommand: CommandModule = {
   command: 'tag <ref> <tag-name> [project]',
@@ -32,6 +33,33 @@ const tagCommand: CommandModule = {
       }),
   handler: argv => {
     new Tags(argv).run();
+  },
+};
+
+const branchCommand: CommandModule = {
+  command: 'branch <ref> <branch-name> [project]',
+  describe: 'creates new branch on configured projects',
+  builder: yargs =>
+    yargs
+      .positional('ref', {
+        describe: 'git ref position where new branch should be located',
+        required: true,
+      })
+      .positional('branch-name', {
+        describe: 'branch name to remove/delete',
+      })
+      .positional('project', {
+        default: 'all',
+        describe: 'name of affected project',
+      })
+      .option('await', {
+        alias: 'a',
+        type: 'boolean',
+        default: true,
+        description: 'awaits pipeline completion',
+      }),
+  handler: argv => {
+    new Branch(argv).run();
   },
 };
 
@@ -116,6 +144,7 @@ const initCommand: CommandModule = {
 const ttyWidth = process.stdout.columns || 80;
 yargs
   .command(tagCommand)
+  .command(branchCommand)
   .command(checkCommand)
   .command(pipelineCommand)
   .command(jobCommand)

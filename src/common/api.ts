@@ -124,7 +124,19 @@ export function findProject(URI: string, search: string) {
       membership: true,
     },
   };
-  return axios(options).then(resp => {
-    return resp.data;
-  });
+  return axios(options).then(resp => resp.data);
+}
+
+export function createNewBranch(URI: string, projectId: number, ref: string, branchName: string) {
+  const url = `${URI}/projects/${projectId}/repository/branches`;
+  const options = {
+    url,
+    method: 'post',
+    headers,
+    params: {
+      branch: branchName,
+      ref: ref,
+    },
+  };
+  return axios(options).then(resp => resp.data);
 }
