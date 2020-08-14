@@ -4,20 +4,14 @@ import { findJob, playJob, Response, StatusCode } from '../common/api';
 import { IJob } from '../common/iJob';
 
 export class Job extends PipelineCommand {
-  run() {
-    const promises = this.config.projects.map(async (project) => {
-      this.screenPrinter.addProject(project);
-      this.screenPrinter.print();
-      const deployPromise = await this.job(project);
+  protected async runPerProject<T>(project: Project): Promise<Response<T>> {
+    const deployPromise = await this.job(project);
 
-      if (this.yargs.await && deployPromise.status === StatusCode.Success) {
-        return await this.awaitPipelineCompletion(project, this.yargs.ref);
-      } else {
-        return deployPromise;
-      }
-    });
-
-    this.screenPrinter.onEnd(promises);
+    if (this.yargs.await && deployPromise.status === StatusCode.Success) {
+      return await this.awaitPipelineCompletion(project, this.yargs.ref);
+    } else {
+      return deployPromise;
+    }
   }
 
   private async job(project: Project) {

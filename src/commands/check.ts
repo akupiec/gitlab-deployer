@@ -3,14 +3,7 @@ import { PipelineCommand } from '../common/pipelines';
 import { StatusCode } from '../common/api';
 
 export class Check extends PipelineCommand {
-  run() {
-    const promises = this.config.projects.map(p => this._runPerProject(p));
-    this.screenPrinter.onEnd(promises);
-  }
-
-  private async _runPerProject(project: Project) {
-    this.screenPrinter.addProject(project);
-    this.screenPrinter.print();
+  protected async runPerProject(project: Project) {
     if (this.yargs.await) {
       return await this.awaitPipelineCompletion(project, this.yargs.ref);
     } else {

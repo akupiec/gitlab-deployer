@@ -3,18 +3,12 @@ import { PipelineCommand } from '../common/pipelines';
 import { createPipeline, Response, StatusCode } from '../common/api';
 
 export class Pipeline extends PipelineCommand {
-  run() {
-    const promises = this.config.projects.map(async project => {
-      this.screenPrinter.addProject(project);
-      this.screenPrinter.print();
-      const resp = await this.triggerPipeline(project);
-      if (resp.status === StatusCode.Success && this.yargs.await) {
-        return await this.awaitPipelineCompletion(project, this.yargs.ref);
-      }
-      return resp;
-    });
-
-    this.screenPrinter.onEnd(promises);
+  protected async runPerProject<T>(project: Project): Promise<Response<T>> {
+    const resp = await this.triggerPipeline(project);
+    if (resp.status === StatusCode.Success && this.yargs.await) {
+      return await this.awaitPipelineCompletion(project, this.yargs.ref);
+    }
+    return resp;
   }
 
   private triggerPipeline(
