@@ -5,6 +5,7 @@ import { PIPELINES_CHECK_SIZE } from '../costansts';
 import { CommandRunner } from '../commands/CommandRunner';
 import { getPipelineByRef } from './api-compex';
 import { IPipeline } from './iPipeline';
+import { bold } from 'chalk';
 
 export abstract class PipelineCommand extends CommandRunner {
   protected getPipeline(project: Project, ref: string): Promise<Response<IPipeline>> {
@@ -49,10 +50,10 @@ export abstract class PipelineCommand extends CommandRunner {
         lastStatus = StatusCode.Success;
         break;
       } else if (resp.status) {
-        const message = `Pipeline status: ${resp.status}`;
-        this.screenPrinter.setProjectError(project, message);
+        const message = `Pipeline status: ${bold(resp.status)}`;
+        this.screenPrinter.setProjectWarn(project, message);
         lastMessage = message;
-        lastStatus = StatusCode.Error;
+        lastStatus = StatusCode.Warn;
         break;
       } else {
         lastMessage = 'Pipeline not Found!';

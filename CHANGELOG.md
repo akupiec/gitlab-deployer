@@ -12,6 +12,8 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 - optimized pipeline status check
 - dummy await 15s delay for tag check status
 - better pipeline searching
+### Bugfix
+- warn when on check pipeline is not success
 
 ## 1.0.2 - 2020-05-15
 ### Features
