@@ -11,6 +11,7 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 - increased pipeline lookout to 1000
 - optimized pipeline status check
 - dummy await 5s delay for tag check status
+- better pipeline searching
 
 ## 1.0.2 - 2020-05-15
 ### Features

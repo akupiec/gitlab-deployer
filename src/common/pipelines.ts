@@ -8,6 +8,7 @@ import { IPipeline } from './iPipeline';
 
 export abstract class PipelineCommand extends CommandRunner {
   protected getPipeline(project: Project, ref: string): Promise<Response<IPipeline>> {
+    this.screenPrinter.setProjectSpinner(project, 'Searching pipeline...');
     return getPipelineByRef(this.config.uri, project.id, ref).then(
       data => {
         if (!data) {
@@ -33,10 +34,10 @@ export abstract class PipelineCommand extends CommandRunner {
   ): Promise<Response<IPipeline>> {
     this.screenPrinter.setProjectSpinner(project, 'Awaiting pipeline...');
     let resp: IPipeline;
-    let lastMessage;
-    let lastStatus;
+    let lastMessage = 'Pipeline not Found!';
+    let lastStatus = StatusCode.Error;
 
-    while (1) {
+    while (1 && !!pipeline) {
       resp = await getPipeline(this.config.uri, project.id, pipeline.id);
       if (resp.status === 'pending') {
         this.screenPrinter.setProjectSpinner(project, 'Pipeline pending...');
