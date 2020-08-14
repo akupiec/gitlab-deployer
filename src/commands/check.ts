@@ -7,7 +7,7 @@ import { bold } from 'chalk';
 export class Check extends PipelineCommand {
   protected async runPerProject(project: Project) {
     const pipeline = await this.getPipeline(project, this.yargs.ref);
-    if (this.yargs.await) {
+    if (this.yargs.await && pipeline.status === StatusCode.Success) {
       return await this.awaitPipelineCompletion(project, pipeline.data);
     } else {
       return await this.checkStatus(project, pipeline);

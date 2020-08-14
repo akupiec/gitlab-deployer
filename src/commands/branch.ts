@@ -5,7 +5,7 @@ import { createNewBranch, Response, StatusCode } from '../common/api';
 export class Branch extends PipelineCommand {
   protected async runPerProject(project: Project) {
     const promise = await this.createBranch(project);
-    if (this.yargs.await) {
+    if (this.yargs.await && promise.status === StatusCode.Success) {
       return await this.awaitForFuturePipe(project, this.yargs.branchName);
     } else {
       return promise;
