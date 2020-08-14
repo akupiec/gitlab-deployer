@@ -10,7 +10,7 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 - new aliases for pipeline & deploy
 - increased pipeline lookout to 1000
 - optimized pipeline status check
-- dummy await 5s delay for tag check status
+- dummy await 15s delay for tag check status
 - better pipeline searching
 
 ## 1.0.2 - 2020-05-15

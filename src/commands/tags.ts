@@ -7,8 +7,9 @@ export class Tags extends PipelineCommand {
   protected async runPerProject(project: Project) {
     const tag = await this.crateTag(project);
     if (this.yargs.await) {
-      await sleep(5000);
-      const pipeline = await this.getPipeline(project, this.yargs.ref);
+      this.screenPrinter.setProjectSpinner(project, 'Awaiting pipeline creation...');
+      await sleep(15000);
+      const pipeline = await this.getPipeline(project, this.yargs.tagName);
       return await this.awaitPipelineCompletion(project, pipeline.data);
     }
     return tag;
