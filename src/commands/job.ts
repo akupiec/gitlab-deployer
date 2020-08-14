@@ -7,6 +7,9 @@ import { IPipeline } from '../common/iPipeline';
 export class Job extends PipelineCommand {
   protected async runPerProject(project: Project) {
     const pipeline = await this.getPipeline(project, this.yargs.ref);
+    if (pipeline.status !== StatusCode.Success) {
+      return pipeline;
+    }
     const deployPromise = await this.job(pipeline, project);
 
     if (this.yargs.await && deployPromise.status === StatusCode.Success) {
