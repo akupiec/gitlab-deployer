@@ -1,5 +1,5 @@
 import { IJob } from './iJob';
-import { PIPELINES_PAGE_SIZE } from '../costansts';
+import { IPipeline } from './iPipeline';
 
 const axios = require('axios');
 
@@ -19,8 +19,13 @@ const headers = {
   'PRIVATE-TOKEN': process.env.GIT_ACCESS_TOKEN,
 };
 
-function getPipelines(URI: string, projectId: number) {
-  const url = `${URI}/projects/${projectId}/pipelines?per_page=${PIPELINES_PAGE_SIZE}`;
+export function getPipelines(
+  URI: string,
+  projectId: number,
+  pageSize = 20,
+  page: number = 0,
+): Promise<IPipeline[]> {
+  const url = `${URI}/projects/${projectId}/pipelines?page=${page}&per_page=${pageSize}`;
   const options = {
     url,
     method: 'get',
@@ -29,12 +34,14 @@ function getPipelines(URI: string, projectId: number) {
   return axios(options).then(resp => resp.data);
 }
 
-export function getPipelineByRef(URI: string, projectId: number, ref: string) {
-  return getPipelines(URI, projectId).then(data => {
-    let pipelines = data.filter(t => t.ref === ref || String(t.sha).includes(ref));
-    pipelines.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
-    return pipelines[0];
-  });
+export function getPipelineJobs(URI: string, projectId: number, pipelineId: string) {
+  const url = `${URI}/projects/${projectId}/pipelines/${pipelineId}/jobs`;
+  const options = {
+    url,
+    method: 'get',
+    headers,
+  };
+  return axios(options).then(resp => resp.data);
 }
 
 export function createTagOnRef(URI: string, projectId: number, tagName: string, ref: string) {

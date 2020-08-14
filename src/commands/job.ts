@@ -1,7 +1,8 @@
 import { Project } from '../common/Config';
-import { IPipeline, PipelineCommand } from '../common/pipelines';
+import { PipelineCommand } from '../common/pipelines';
 import { findJob, playJob, Response, StatusCode } from '../common/api';
 import { IJob } from '../common/iJob';
+import { IPipeline } from '../common/iPipeline';
 
 export class Job extends PipelineCommand {
   protected async runPerProject<T>(project: Project): Promise<Response<T>> {

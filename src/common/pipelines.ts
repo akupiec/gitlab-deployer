@@ -1,21 +1,17 @@
 import { Project } from './Config';
-import { getPipelineByRef, Response, StatusCode } from './api';
+import { Response, StatusCode } from './api';
 import { sleep } from './sleep';
-import { PIPELINES_PAGE_SIZE } from '../costansts';
+import { PIPELINES_CHECK_SIZE } from '../costansts';
 import { CommandRunner } from '../commands/CommandRunner';
-
-export interface IPipeline {
-  id: string;
-  status: string;
-  created_at: string;
-}
+import { getPipelineByRef } from './api-compex';
+import { IPipeline } from './iPipeline';
 
 export abstract class PipelineCommand extends CommandRunner {
   protected getPipeline(project: Project, ref: string): Promise<Response<IPipeline>> {
     return getPipelineByRef(this.config.uri, project.id, ref).then(
       data => {
         if (!data) {
-          const message = `Not Found in last ${PIPELINES_PAGE_SIZE} triggered pipelines`;
+          const message = `Not Found in last ${PIPELINES_CHECK_SIZE} triggered pipelines`;
           this.screenPrinter.setProjectWarn(project, message);
           return { status: StatusCode.Warn, message };
         }
