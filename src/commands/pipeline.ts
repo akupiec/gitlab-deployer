@@ -11,9 +11,7 @@ export class Pipeline extends PipelineCommand {
     return resp;
   }
 
-  private triggerPipeline(
-    project: Project,
-  ): Promise<Response<any>> {
+  private triggerPipeline(project: Project): Promise<Response<any>> {
     return createPipeline(this.config.uri, project.id, this.yargs.ref).then(
       data => {
         this.screenPrinter.setProjectSuccess(project, 'Pipeline crated');

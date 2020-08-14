@@ -24,7 +24,5 @@ export abstract class CommandRunner {
     this.screenPrinter.onEnd(promises);
   }
 
-  protected abstract runPerProject<T>(project: Project): Promise<Response<T>>
+  protected abstract runPerProject<T>(project: Project): Promise<Response<T>>;
 }
-
-

@@ -106,5 +106,4 @@ export function findProject(URI: string, search: string) {
   return axios(options).then(resp => {
     return resp.data;
   });
-
 }

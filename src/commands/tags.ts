@@ -3,7 +3,6 @@ import { createTagOnRef, Response, StatusCode } from '../common/api';
 import { PipelineCommand } from '../common/pipelines';
 
 export class Tags extends PipelineCommand {
-
   protected async runPerProject<T>(project: Project): Promise<Response<T>> {
     const tag = await this.crateTag(project);
     if (this.yargs.await) {

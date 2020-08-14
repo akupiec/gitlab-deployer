@@ -26,10 +26,7 @@ export class Job extends PipelineCommand {
     return await this.triggerJob(project, job.data);
   }
 
-  private async getJob(
-    project: Project,
-    pipeline: IPipeline,
-  ): Promise<Response<IJob>> {
+  private async getJob(project: Project, pipeline: IPipeline): Promise<Response<IJob>> {
     const stage = this.config.getStage(project);
     const uri = this.config.uri;
     return findJob(uri, project.id, pipeline.id, stage).then(
@@ -58,10 +55,7 @@ export class Job extends PipelineCommand {
     );
   }
 
-  private async triggerJob(
-    project: Project,
-    job: IJob,
-  ): Promise<Response<any>> {
+  private async triggerJob(project: Project, job: IJob): Promise<Response<any>> {
     return playJob(this.config.uri, project.id, job.id).then(
       data => {
         this.screenPrinter.setProjectSuccess(project, 'IJob Started');

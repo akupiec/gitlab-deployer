@@ -51,12 +51,14 @@ function askData(data: string) {
 }
 
 function askOpenEditor() {
-  return inquirer.prompt({
-    name: 'openEditor',
-    message: 'Would you like to preview & edit your configuration ?',
-    type: 'confirm',
-    default: false,
-  }).then(resp => resp.openEditor);
+  return inquirer
+    .prompt({
+      name: 'openEditor',
+      message: 'Would you like to preview & edit your configuration ?',
+      type: 'confirm',
+      default: false,
+    })
+    .then(resp => resp.openEditor);
 }
 
 function mapProjects(projects: Project[]) {

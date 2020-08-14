@@ -6,7 +6,9 @@ export class Yargs {
   constructor(args) {
     this._args = args;
     if (!this._args.config.endsWith('.yml')) {
-      console.error(chalk.red(`[ERROR] Config file extension is invalid, only '.yml' are accepted!`));
+      console.error(
+        chalk.red(`[ERROR] Config file extension is invalid, only '.yml' are accepted!`),
+      );
       process.exit(-1);
     }
   }
