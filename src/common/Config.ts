@@ -26,7 +26,7 @@ export class Config {
       if (!this._config.projects.hasOwnProperty(projectKey)) {
         continue;
       }
-      if (projectKey.includes(this._yargs.project) || this._yargs.project === 'all') {
+      if (this.isMatchingYargsSelector(projectKey)) {
         projects.push({
           name: projectKey,
           id: this._config.projects[projectKey],
@@ -34,6 +34,14 @@ export class Config {
       }
     }
     return projects;
+  }
+
+  private isMatchingYargsSelector(projectKey: string): boolean {
+    if (this._yargs.projects === 'all') {
+      return true;
+    }
+    const projectSelector = this._yargs.projects.split(',');
+    return projectSelector.some((selector) => projectKey.includes(selector));
   }
 
   get refreshTime() {

@@ -29,8 +29,8 @@ export class Yargs {
     return this._args.branchName;
   }
 
-  get project() {
-    return this._args.project || 'all';
+  get projects() {
+    return this._args.projects || 'all';
   }
 
   get await() {

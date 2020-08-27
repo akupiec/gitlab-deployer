@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## 1.1.1 - ???
+### Features
+- new aliases for job stage
+- optional parameter 'project' now accept list of projects separated by comma
+
 ## 1.1.0 - 2020-08-14
 ### Features
 - new aliases for pipeline & deploy

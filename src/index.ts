@@ -9,7 +9,7 @@ import { CommandModule } from 'yargs';
 import { Branch } from './commands/branch';
 
 const tagCommand: CommandModule = {
-  command: 'tag <ref> <tag-name> [project]',
+  command: 'tag <ref> <tag-name> [projects]',
   describe: 'creates new tags on configured projects',
   builder: (yargs) =>
     yargs
@@ -21,9 +21,9 @@ const tagCommand: CommandModule = {
       .positional('tag-name', {
         describe: 'tag name to remove/delete',
       })
-      .positional('project', {
+      .positional('projects', {
         default: 'all',
-        describe: 'name of affected project',
+        describe: 'name of affected projects separated by ,(comma)',
       })
       .option('await', {
         alias: 'a',
@@ -37,7 +37,7 @@ const tagCommand: CommandModule = {
 };
 
 const branchCommand: CommandModule = {
-  command: 'branch <ref> <branch-name> [project]',
+  command: 'branch <ref> <branch-name> [projects]',
   describe: 'creates new branch on configured projects',
   builder: (yargs) =>
     yargs
@@ -48,9 +48,9 @@ const branchCommand: CommandModule = {
       .positional('branch-name', {
         describe: 'branch name to remove/delete',
       })
-      .positional('project', {
+      .positional('projects', {
         default: 'all',
-        describe: 'name of affected project',
+        describe: 'name of affected projects separated by ,(comma)',
       })
       .option('await', {
         alias: 'a',
@@ -64,16 +64,16 @@ const branchCommand: CommandModule = {
 };
 
 const checkCommand: CommandModule = {
-  command: 'check <ref> [project]',
+  command: 'check <ref> [projects]',
   describe: 'check status of pipeline',
   builder: (yargs) =>
     yargs
       .positional('ref', {
         describe: 'git ref position can be tag, branch or hash',
       })
-      .positional('project', {
+      .positional('projects', {
         default: 'all',
-        describe: 'name of affected project',
+        describe: 'name of affected projects separated by ,(comma)',
       })
       .option('await', {
         alias: 'a',
@@ -87,7 +87,7 @@ const checkCommand: CommandModule = {
 };
 
 const pipelineCommand: CommandModule = {
-  command: 'pipeline <ref> [project]',
+  command: 'pipeline <ref> [projects]',
   describe: 'trigger pipeline',
   aliases: ['redeploy'],
   builder: (yargs) =>
@@ -95,9 +95,9 @@ const pipelineCommand: CommandModule = {
       .positional('ref', {
         describe: 'git ref position can be tag, branch or hash',
       })
-      .positional('project', {
+      .positional('projects', {
         default: 'all',
-        describe: 'name of affected project',
+        describe: 'name of affected projects separated by ,(comma)',
       })
       .option('await', {
         alias: 'a',
@@ -108,7 +108,7 @@ const pipelineCommand: CommandModule = {
   handler: (argv) => new Pipeline(argv).run(),
 };
 const jobCommand: CommandModule = {
-  command: 'job <ref> [stage] [project]',
+  command: 'job <ref> [jobName] [projects]',
   describe: 'runs single pipeline job',
   aliases: ['deploy'],
   builder: (yargs) =>
@@ -116,13 +116,15 @@ const jobCommand: CommandModule = {
       .positional('ref', {
         describe: 'git ref position what should be deployed',
       })
-      .positional('stage', {
+      .positional('jobName', {
+        alias: 'stage',
         default: 'dev',
         describe: 'name of stage job that will be triggered',
       })
-      .positional('project', {
+      .positional('projects', {
         default: 'all',
-        describe: 'name of affected project',
+        describe: 'name of affected projects separated by ,(comma)',
+        type: 'string',
       })
       .option('await', {
         alias: 'a',
