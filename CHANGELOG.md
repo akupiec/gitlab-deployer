@@ -9,6 +9,8 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Features
 - new aliases for job stage
 - optional parameter 'project' now accept list of projects separated by comma
+- show pipelink if something wasn't finished as expected
+- pipe status 'failed' resolve now to ERROR instead WARN
 
 ## 1.1.0 - 2020-08-14
 ### Features

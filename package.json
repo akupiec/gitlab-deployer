@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "build": "webpack -c webpack.config.js && chmod +x dist/gitlab-deployer",
-    "test": "npx ts-node src/index.ts --help",
+    "test": "node --require ts-node/register src/index.ts --help",
     "prettier:format": "prettier --write src/**/*.{js,ts,html,scss}"
   },
   "author": "kupiecart+os@gmail.com",

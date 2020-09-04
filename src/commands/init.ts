@@ -98,7 +98,7 @@ async function askStages() {
       name: 'stages',
       message: 'Provide deployment stages separated by comma',
       type: 'input',
-      filter: function(input: string) {
+      filter: function (input: string) {
         return input.split(',').map((stage) => stage.trim());
       },
     })
@@ -123,7 +123,7 @@ function askBasicApi() {
       message: 'Provide gitlab api v4 url',
       type: 'input',
       default: 'https://git.<your_inner_domain>.com/api/v4',
-      validate: function(input: string) {
+      validate: function (input: string) {
         if (!input.startsWith('https://')) {
           return 'Protocol need to be a "https"';
         }
@@ -154,7 +154,7 @@ async function askProjects(url: string, num: number) {
       name: 'project',
       message: 'Provide name of ' + i + ' project',
       type: 'autocomplete',
-      source: function(answersSoFar, input) {
+      source: function (answersSoFar, input) {
         return findProject(url, input).then((resp) =>
           resp.map((project) => ({
             name: project.name,

@@ -4,7 +4,7 @@ import { sleep } from './sleep';
 import { PIPELINES_CHECK_SIZE } from '../costansts';
 import { CommandRunner } from '../commands/CommandRunner';
 import { getPipelineByRef } from './api-compex';
-import { IPipeline } from './iPipeline';
+import { IPipeline, IPipelineStatus } from './iPipeline';
 import { bold } from 'chalk';
 
 export abstract class PipelineCommand extends CommandRunner {
@@ -35,8 +35,6 @@ export abstract class PipelineCommand extends CommandRunner {
   ): Promise<Response<IPipeline>> {
     this.screenPrinter.setProjectSpinner(project, 'Awaiting pipeline...');
     let resp: IPipeline;
-    let lastMessage = 'Pipeline not Found!';
-    let lastStatus = StatusCode.Error;
 
     while (1 && !!pipeline) {
       resp = await getPipeline(this.config.uri, project.id, pipeline.id);
@@ -44,27 +42,14 @@ export abstract class PipelineCommand extends CommandRunner {
         this.screenPrinter.setProjectSpinner(project, 'Pipeline pending...');
       } else if (resp.status === 'running') {
         this.screenPrinter.setProjectSpinner(project, 'Pipeline running...');
-      } else if (resp.status === 'success') {
-        this.screenPrinter.setProjectSuccess(project, 'Pipeline done!');
-        lastMessage = 'Pipeline done!';
-        lastStatus = StatusCode.Success;
-        break;
-      } else if (resp.status) {
-        const message = `Pipeline status: ${bold(resp.status)}`;
-        this.screenPrinter.setProjectWarn(project, message);
-        lastMessage = message;
-        lastStatus = StatusCode.Warn;
-        break;
       } else {
-        lastMessage = 'Pipeline not Found!';
-        lastStatus = StatusCode.Error;
-        break;
+        return this.parsePipelineResp(project, resp);
       }
       await sleep(this.config.refreshTime);
     }
     return {
-      message: lastMessage,
-      status: lastStatus,
+      message: 'Pipeline not Found!',
+      status: StatusCode.Error,
       data: resp,
     };
   }
@@ -77,5 +62,37 @@ export abstract class PipelineCommand extends CommandRunner {
       return pipeline;
     }
     return await this.awaitPipelineCompletion(project, pipeline.data);
+  }
+
+  protected parsePipelineResp(project: Project, resp: IPipeline): Response<IPipeline> {
+    let lastMessage;
+    let lastStatus;
+
+    if (resp.status === 'success') {
+      this.screenPrinter.setProjectSuccess(project, 'Pipeline done!');
+      lastMessage = 'Pipeline done!';
+      lastStatus = StatusCode.Success;
+    } else if (resp.status === IPipelineStatus.FAILED) {
+      let message = `Pipeline: ${bold(resp.status)}`;
+      message += `\nLink: ${resp.web_url}`;
+      this.screenPrinter.setProjectError(project, message);
+      lastMessage = message;
+      lastStatus = StatusCode.Error;
+    } else if (resp.status) {
+      let message = `Pipeline: ${bold(resp.status)}`;
+      message += `\nLink: ${resp.web_url}`;
+      this.screenPrinter.setProjectWarn(project, message);
+      lastMessage = message;
+      lastStatus = StatusCode.Warn;
+    } else {
+      lastMessage = 'Pipeline not Found!';
+      lastStatus = StatusCode.Error;
+    }
+
+    return {
+      message: lastMessage,
+      status: lastStatus,
+      data: resp,
+    };
   }
 }

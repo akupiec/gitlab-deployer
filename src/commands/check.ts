@@ -1,7 +1,7 @@
 import { Project } from '../common/Config';
 import { PipelineCommand } from '../common/pipelines';
 import { Response, StatusCode } from '../common/api';
-import { IPipeline } from '../common/iPipeline';
+import { IPipeline, IPipelineStatus } from '../common/iPipeline';
 import { bold } from 'chalk';
 
 export class Check extends PipelineCommand {
@@ -17,10 +17,14 @@ export class Check extends PipelineCommand {
   private async checkStatus(project: Project, pipeline: Response<IPipeline>) {
     const data = pipeline.data;
     if (pipeline.status === StatusCode.Success) {
-      const msg = `Pipeline status: ${bold(data.status)} last update ${data.created_at}`;
-      if (data.status === 'success') {
+      let msg = `Pipeline status: ${bold(data.status)}`;
+      if (data.status === IPipelineStatus.SUCCESS) {
         this.screenPrinter.setProjectSuccess(project, msg);
+      } else if (data.status === IPipelineStatus.FAILED) {
+        msg += `\nLink: ${data.web_url}`;
+        this.screenPrinter.setProjectError(project, msg);
       } else {
+        msg += `\nLink: ${data.web_url}`;
         this.screenPrinter.setProjectWarn(project, msg);
       }
     }
