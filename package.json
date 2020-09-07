@@ -1,6 +1,6 @@
 {
   "name": "gitlab-deployer",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "GitLab deployment tool provides a set of useful functions for complex processes",
   "main": "dist/gitlab-deployer",
   "private": true,
