@@ -1,10 +1,11 @@
 import { Project } from '../common/Config';
-import { PipelineCommand } from '../common/pipelines';
-import { Response, StatusCode } from '../common/api';
-import { IPipeline, IPipelineStatus } from '../common/iPipeline';
+import { PipelineRunner } from './abstract/PipelineRunner';
+import { Response, StatusCode } from '../common/api/api';
+import { IPipeline, IPipelineStatus } from '../common/api/model/iPipeline';
 import { bold } from 'chalk';
+import { CommandModule } from 'yargs';
 
-export class Check extends PipelineCommand {
+export class Check extends PipelineRunner {
   protected async runPerProject(project: Project) {
     const pipeline = await this.getPipeline(project, this.yargs.ref);
     if (this.yargs.await && pipeline.status === StatusCode.Success) {
@@ -31,3 +32,26 @@ export class Check extends PipelineCommand {
     return pipeline;
   }
 }
+
+export const checkCommand: CommandModule = {
+  command: 'check <ref> [projects]',
+  describe: 'check status of pipeline',
+  builder: (yargs) =>
+    yargs
+      .positional('ref', {
+        describe: 'git ref position can be tag, branch or hash',
+      })
+      .positional('projects', {
+        default: 'all',
+        describe: 'name of affected projects separated by ,(comma)',
+      })
+      .option('await', {
+        alias: 'a',
+        type: 'boolean',
+        default: false,
+        description: 'awaits pipeline completion',
+      }),
+  handler: (argv) => {
+    new Check(argv).run();
+  },
+};

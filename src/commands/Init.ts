@@ -2,8 +2,9 @@ import { Project } from '../common/Config';
 import * as fs from 'fs';
 import * as chalk from 'chalk';
 import * as packageInfo from '../../package.json';
-import { findProject } from '../common/api';
+import { findProject } from '../common/api/api';
 import { Yargs } from '../common/Yargs';
+import { CommandModule } from 'yargs';
 
 var inquirer = require('inquirer');
 inquirer.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
@@ -175,3 +176,9 @@ function checkIfFileExists(yargs: Yargs) {
     process.exit(-1);
   }
 }
+
+export const initCommand: CommandModule = {
+  command: 'init',
+  describe: 'Create configuration file',
+  handler: (argv) => runInit(argv),
+};

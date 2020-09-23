@@ -1,13 +1,13 @@
-import { Project } from './Config';
-import { getPipeline, Response, StatusCode } from './api';
-import { sleep } from './sleep';
-import { PIPELINES_CHECK_SIZE } from '../costansts';
-import { CommandRunner } from '../commands/CommandRunner';
-import { getPipelineByRef } from './api-compex';
-import { IPipeline, IPipelineStatus } from './iPipeline';
+import { Project } from '../../common/Config';
+import { getPipeline, Response, StatusCode } from '../../common/api/api';
+import { sleep } from '../../common/sleep';
+import { PIPELINES_CHECK_SIZE } from '../../costansts';
+import { CommandRunner } from './CommandRunner';
+import { getPipelineByRef } from '../../common/api/api-compex';
+import { IPipeline, IPipelineStatus } from '../../common/api/model/iPipeline';
 import { bold } from 'chalk';
 
-export abstract class PipelineCommand extends CommandRunner {
+export abstract class PipelineRunner extends CommandRunner {
   protected getPipeline(project: Project, ref: string): Promise<Response<IPipeline>> {
     this.screenPrinter.setProjectSpinner(project, 'Searching pipeline...');
     return getPipelineByRef(this.config.uri, project.id, ref).then(

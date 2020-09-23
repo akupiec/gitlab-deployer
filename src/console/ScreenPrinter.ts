@@ -4,7 +4,7 @@ import { Instance, render } from 'ink';
 import { InkPainter } from './InkPainter';
 import { createElement } from 'react';
 import { LineData, LineType } from './Interfaces';
-import { Response, StatusCode } from '../common/api';
+import { Response, StatusCode } from '../common/api/api';
 
 export class ScreenPrinter {
   private projectsLines: Map<Project, LineData> = new Map();

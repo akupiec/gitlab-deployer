@@ -1,6 +1,6 @@
-import { PIPELINES_CHECK_SIZE, PIPELINES_PAGE_SIZE } from '../costansts';
+import { PIPELINES_CHECK_SIZE, PIPELINES_PAGE_SIZE } from '../../costansts';
 import { getPipelines } from './api';
-import { IPipeline } from './iPipeline';
+import { IPipeline } from './model/iPipeline';
 
 function getPipelinesByRef(
   URI: string,

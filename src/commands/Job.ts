@@ -1,10 +1,11 @@
 import { Project } from '../common/Config';
-import { PipelineCommand } from '../common/pipelines';
-import { findJob, playJob, Response, StatusCode } from '../common/api';
-import { IJob } from '../common/iJob';
-import { IPipeline } from '../common/iPipeline';
+import { PipelineRunner } from './abstract/PipelineRunner';
+import { findJob, playJob, Response, StatusCode } from '../common/api/api';
+import { IJob } from '../common/api/model/iJob';
+import { IPipeline } from '../common/api/model/iPipeline';
+import { CommandModule } from 'yargs';
 
-export class Job extends PipelineCommand {
+export class Job extends PipelineRunner {
   protected async runPerProject(project: Project) {
     const pipeline = await this.getPipeline(project, this.yargs.ref);
     if (pipeline.status !== StatusCode.Success) {
@@ -78,3 +79,33 @@ export class Job extends PipelineCommand {
     );
   }
 }
+
+export const jobCommand: CommandModule = {
+  command: 'job <ref> [jobName] [projects]',
+  describe: 'runs single pipeline job',
+  aliases: ['deploy'],
+  builder: (yargs) =>
+    yargs
+      .positional('ref', {
+        describe: 'git ref position what should be deployed',
+      })
+      .positional('jobName', {
+        alias: 'stage',
+        default: 'dev',
+        describe: 'name of stage job that will be triggered',
+      })
+      .positional('projects', {
+        default: 'all',
+        describe: 'name of affected projects separated by ,(comma)',
+        type: 'string',
+      })
+      .option('await', {
+        alias: 'a',
+        type: 'boolean',
+        default: true,
+        description: 'awaits pipeline completion',
+      }),
+  handler: (argv) => {
+    new Job(argv).run();
+  },
+};

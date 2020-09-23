@@ -1,8 +1,8 @@
-import { Yargs } from '../common/Yargs';
-import { Config, Project } from '../common/Config';
-import { ScreenPrinter } from '../console/ScreenPrinter';
-import { Response } from '../common/api';
-import { IPipeline } from '../common/iPipeline';
+import { Yargs } from '../../common/Yargs';
+import { Config, Project } from '../../common/Config';
+import { ScreenPrinter } from '../../console/ScreenPrinter';
+import { Response } from '../../common/api/api';
+import { IPipeline } from '../../common/api/model/iPipeline';
 
 export abstract class CommandRunner {
   protected yargs!: Yargs;

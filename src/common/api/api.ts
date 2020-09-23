@@ -1,5 +1,5 @@
-import { IJob } from './iJob';
-import { IPipeline } from './iPipeline';
+import { IJob } from './model/iJob';
+import { IPipeline } from './model/iPipeline';
 
 const axios = require('axios');
 
