@@ -40,4 +40,16 @@ export class Yargs {
   get stage() {
     return this._args.stage;
   }
+
+  get sourceRef() {
+    return this._args.sourceRef;
+  }
+
+  get targetRef() {
+    return this._args.targetRef;
+  }
+
+  get title() {
+    return this._args.title;
+  }
 }

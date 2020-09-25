@@ -29,7 +29,7 @@ export abstract class PipelineRunner extends CommandRunner {
     return fetch(this.config.uri, project.id, ref);
   }
 
-  protected async awaitPipelineCompletion(
+  private async awaitCompletion(
     project: Project,
     pipeline: IPipeline,
   ): Promise<Response<IPipeline>> {
@@ -54,14 +54,14 @@ export abstract class PipelineRunner extends CommandRunner {
     };
   }
 
-  protected async awaitForFuturePipe(project: Project, ref: string) {
-    this.screenPrinter.setProjectSpinner(project, 'Awaiting pipeline creation...');
+  private async findAndAwait(project: Project, ref: string) {
+    this.screenPrinter.setProjectSpinner(project, 'More waiting....');
     await sleep(15000);
     const pipeline = await this.getPipeline(project, ref);
-    if (pipeline.status !== StatusCode.Success) {
+    if (pipeline.status === StatusCode.Error) {
       return pipeline;
     }
-    return await this.awaitPipelineCompletion(project, pipeline.data);
+    return await this.awaitCompletion(project, pipeline.data);
   }
 
   protected parsePipelineResp(project: Project, resp: IPipeline): Response<IPipeline> {
@@ -103,7 +103,7 @@ export abstract class PipelineRunner extends CommandRunner {
 
   protected async awaitIfNeeded(resp: Response<any>, ref: string): Promise<Response<any>> {
     if (this.yargs.await && resp.status !== StatusCode.Error) {
-      return await this.awaitForFuturePipe(resp.project, ref);
+      return await this.findAndAwait(resp.project, ref);
     }
     return resp;
   }

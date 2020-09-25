@@ -6,15 +6,19 @@ import { jobCommand } from './commands/Job';
 import { initCommand } from './commands/Init';
 import * as yargs from 'yargs';
 import { branchCommand } from './commands/Branch';
+import { mergeCommand } from './commands/Merge';
+import { acceptCommand } from './commands/AcceptMR';
 
 const ttyWidth = process.stdout.columns || 80;
 yargs
-  .command(tagCommand)
-  .command(branchCommand)
+  .command(initCommand)
   .command(checkCommand)
   .command(pipelineCommand)
   .command(jobCommand)
-  .command(initCommand)
+  .command(branchCommand)
+  .command(tagCommand)
+  .command(mergeCommand)
+  .command(acceptCommand)
   .option('config', {
     type: 'string',
     default: 'config.yml',

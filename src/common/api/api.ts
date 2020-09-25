@@ -1,6 +1,8 @@
 import { IJob } from './model/iJob';
 import { IPipeline } from './model/iPipeline';
 import { IBranch } from './model/iBranch';
+import { IMerge } from './model/iMerge';
+import { GITLAB_DEPLOYER_MR_LABEL } from '../../costansts';
 
 const axios = require('axios');
 
@@ -130,6 +132,85 @@ export function createNewBranch(
     params: {
       branch: branchName,
       ref: ref,
+    },
+  };
+  return axios(options).then((resp) => resp.data);
+}
+
+export function createNewMergeRequest(
+  URI: string,
+  projectId: number,
+  sourceRef: string,
+  targetRef: string,
+  title: string,
+): Promise<IMerge> {
+  const url = `${URI}/projects/${projectId}/merge_requests`;
+  const options = {
+    url,
+    method: 'post',
+    headers,
+    params: {
+      source_branch: sourceRef,
+      target_branch: targetRef,
+      title: title,
+      labels: [GITLAB_DEPLOYER_MR_LABEL],
+    },
+  };
+  return axios(options).then((resp) => resp.data);
+}
+
+export function deleteMergeRequest(URI: string, projectId: number, iid: string): Promise<any> {
+  const url = `${URI}/projects/${projectId}/merge_requests/${iid}`;
+  const options = {
+    url,
+    method: 'delete',
+    headers,
+  };
+  return axios(options).then((resp) => resp.data);
+}
+
+export function autoMergeMR(URI: string, projectId: number, iid: string): Promise<any> {
+  const url = `${URI}/projects/${projectId}/merge_requests/${iid}/merge`;
+  const options = {
+    url,
+    method: 'put',
+    headers,
+    params: {
+      merge_when_pipeline_succeeds: true,
+    },
+  };
+  return axios(options).then((resp) => resp.data);
+}
+
+export function checkDiff(URI: string, projectId: number, sourceRef: string, targetRef: string) {
+  const url = `${URI}/projects/${projectId}/repository/compare`;
+  const options = {
+    url,
+    method: 'get',
+    headers,
+    params: {
+      from: targetRef,
+      to: sourceRef,
+    },
+  };
+  return axios(options).then((resp) => resp.data);
+}
+
+export function findMergeRequests(
+  URI: string,
+  projectId: number,
+  title: string,
+  onlyAutoCrated = true,
+) {
+  const url = `${URI}/projects/${projectId}/merge_requests`;
+  const options = {
+    url,
+    method: 'get',
+    headers,
+    params: {
+      state: 'opened',
+      search: title,
+      labels: onlyAutoCrated ? [GITLAB_DEPLOYER_MR_LABEL] : undefined,
     },
   };
   return axios(options).then((resp) => resp.data);

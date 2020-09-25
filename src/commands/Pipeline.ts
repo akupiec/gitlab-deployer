@@ -3,21 +3,13 @@ import { PipelineRunner } from './abstract/PipelineRunner';
 import { createPipeline } from '../common/api/api';
 import { IPipeline } from '../common/api/model/iPipeline';
 import { CommandModule } from 'yargs';
-import {
-  errorsAreOk,
-  parseNative,
-  parsePipeline,
-  Response,
-  StatusCode,
-} from '../common/api/api.adapter';
+import { errorsAreOk, parseNative, parsePipeline, Response } from '../common/api/api.adapter';
 import { compose } from 'ramda';
 
 export class Pipeline extends PipelineRunner {
   protected async runPerProject(project: Project) {
-    const resp = await this.triggerPipeline(project);
-    if (this.yargs.await && resp.status === StatusCode.Success) {
-      return await this.awaitPipelineCompletion(project, resp.data);
-    }
+    let resp = await this.triggerPipeline(project);
+    resp = await this.awaitIfNeeded(resp, this.yargs.ref);
     return resp;
   }
 

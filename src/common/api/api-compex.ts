@@ -14,7 +14,7 @@ function getPipelinesByRef(
 }
 
 function getNewestPipeline(pipelines: IPipeline[]): IPipeline {
-  pipelines.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+  pipelines.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   return pipelines[0];
 }
 
