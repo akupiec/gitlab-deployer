@@ -1,8 +1,36 @@
 import React, { Component } from 'react';
-import { Box, Color } from 'ink';
-import BigText from 'ink-big-text';
+import { Box } from 'ink';
 import Spinner from 'ink-spinner';
 import { InkProps, LineType } from './Interfaces';
+
+const a = `
+                          _  _
+                _____*~~~  **  ~~~*_____      
+             __* ___     |\\__/|     ___ *__
+           _*  / 888~~\\__(8OO8)__/~~888 \\  *_
+         _*   /88888888888888888888888888\\   *_
+         *   |8888888888888888888888888888|   *
+        /~*  \\8888/~\\88/~\\8888/~\\88/~\\8888/  *~
+        / ~*  \\88/   \\/   (88)   \\/   \\88/  *~
+       /   ~*  \\/          \\/          \\/  *~
+       /     ~~*_                      _*~~/
+       /         ~~~~~*___ ** ___*~~~~~  /
+      /                   ~  ~         /
+      /                              /
+      /                            /
+     /                           /
+     /          _________       /
+     /         | ####### |    / 
+    /     ___  | ####### |   /         _______      
+__gitlab__I_I  | ####### |  /         | ooooo |
+ ##########  | | ####### |__deployer__| ooooo |
+ ##########  | | ####### |oo%Xoox%ooxo| ooooo |
+ ##########  | | ####### |%%x/oo/xx%xo| ooooo |
+ ##########  | | ####### |xxooo%%/xo%o| ~~$~~ |
+ ##########  | | ####### |oox%%o/x%%ox| ooooo |
+ ##########  | | ####### |x%oo%x/o%//x| ooooo |
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+`;
 
 const ProjectLine = ({ projectName, children }) => {
   return (
@@ -13,16 +41,10 @@ const ProjectLine = ({ projectName, children }) => {
   );
 };
 
-const Logo = ({ isTTY, columns, name }) => {
+const Logo = ({ isTTY, columns }) => {
   if (!isTTY) return <></>;
-  if (columns < 75) return <></>;
-  return (
-    <Box>
-      <Color yellow>
-        <BigText text={name} align="center"/>
-      </Color>
-    </Box>
-  );
+  if (columns < 90) return <></>;
+  return <Box width={50}>{a}</Box>;
 };
 
 export class InkPainter extends Component<InkProps, any> {
@@ -39,7 +61,7 @@ export class InkPainter extends Component<InkProps, any> {
       const text = <>{v.message || ''}</>;
       const spinner = (
         <>
-          <Spinner type="arrow3"/> {v.message}
+          <Spinner type="arrow3" /> {v.message}
         </>
       );
       lines.push(
@@ -50,16 +72,16 @@ export class InkPainter extends Component<InkProps, any> {
     });
 
     return (
-      <>
-        <Logo isTTY={process.stdout.isTTY} columns={this.state.columns} name={this.props.name}/>
-        {lines}
-      </>
+      <Box flexDirection={'row'} width={this.state.columns}>
+        <Logo isTTY={process.stdout.isTTY} columns={this.state.columns} />
+        <Box flexDirection={'column'}>{lines}</Box>
+      </Box>
     );
   }
 
   componentDidMount(): void {
     process.stdout.on('resize', () => {
-      this.setState({ columns: 0 });
+      this.setState({ columns: process.stdout.columns });
     });
   }
 }
