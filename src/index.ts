@@ -6,8 +6,6 @@ import { jobCommand } from './commands/Job';
 import { initCommand } from './commands/Init';
 import * as yargs from 'yargs';
 import { branchCommand } from './commands/Branch';
-import { mergeCommand } from './commands/Merge';
-import { acceptCommand } from './commands/AcceptMR';
 import { batmobilCommand } from './commands/Batmobil';
 import { batarangCommand } from './commands/Batarang';
 
@@ -19,8 +17,6 @@ yargs
   .command(jobCommand)
   .command(branchCommand)
   .command(tagCommand)
-  .command(mergeCommand)
-  .command(acceptCommand)
   .command(batmobilCommand)
   .command(batarangCommand)
   .option('config', {

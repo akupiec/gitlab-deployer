@@ -4,8 +4,6 @@ import { PIPELINES_CHECK_SIZE } from '../../costansts';
 import { bold } from 'chalk';
 import { IPipelineStatus } from './model/iPipeline';
 import { IJob } from './model/iJob';
-import { ICompare } from './model/iCompare';
-import { IMerge } from './model/iMerge';
 
 export enum StatusCode {
   Error,
@@ -99,70 +97,6 @@ export function parseJobTrigger(promise: Promise<Response<IJob>>) {
 export function parseTagOnRef(promise: Promise<Response<any>>) {
   return promise.then((resp) => {
     resp.message = 'New Tag crated';
-    return resp;
-  });
-}
-
-export function diffParser(promise: Promise<Response<ICompare>>) {
-  return promise.then((resp) => {
-    resp.message = 'Check compare completed';
-    if (resp.data.compare_same_ref) {
-      resp.message = 'same ref';
-      resp.status = StatusCode.Warn;
-      return resp;
-    }
-    if (resp.data.compare_timeout) {
-      resp.message = 'compare timeout';
-      resp.status = StatusCode.Error;
-      return resp;
-    }
-    if (resp.data.commit === null) {
-      resp.message = 'Nothing changed';
-      resp.status = StatusCode.Warn;
-      return resp;
-    }
-
-    return resp;
-  });
-}
-
-export function parseMerge(promise: Promise<Response<IMerge>>) {
-  return promise.then((resp) => {
-    if (resp.data.has_conflicts !== false) {
-      resp.message = `New MR created with conflicts!\n${resp.data.web_url}`;
-      resp.status = StatusCode.Warn;
-      return resp;
-    }
-    if (!resp.data.changes_count) {
-      resp.message = `Empty MR created & closing....!`;
-      resp.status = StatusCode.Warn;
-      return resp;
-    }
-    resp.message = `MR created!`;
-    return resp;
-  });
-}
-
-export function parseFindSingleMR(promise: Promise<Response<IMerge[]>>) {
-  return promise.then((resp) => {
-    if (resp.data.length > 1) {
-      resp.message = `More then one opened MR found!`;
-      resp.status = StatusCode.Warn;
-      return resp;
-    }
-    resp.message = `MR created!`;
-    resp.data = resp.data[0] as any;
-    return resp;
-  });
-}
-
-export function parseAcceptMR(promise: Promise<Response<any>>) {
-  return promise.then((resp) => {
-    if (resp.data.state === 'merged') {
-      resp.message = `MR merged!`;
-      return resp;
-    }
-    resp.message = `MR accepted & awaiting to be merged!`;
     return resp;
   });
 }
