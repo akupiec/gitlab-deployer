@@ -1,19 +1,11 @@
 import { Project } from '../common/Config';
-import { PipelineRunner } from './abstract/PipelineRunner';
-import { autoMergeMR, findMergeRequests } from '../common/api/api';
+import { findMergeRequests } from '../common/api/api';
 import { CommandModule } from 'yargs';
 import { compose } from 'ramda';
-import { IMerge } from '../common/api/model/iMerge';
-import {
-  errorsAreOk,
-  parseAcceptMR,
-  parseFindSingleMR,
-  parseNative,
-  Response,
-  StatusCode,
-} from '../common/api/api.adapter';
+import { errorsAreOk, parseFindSingleMR, parseNative } from '../common/api/api.adapter';
+import { MergeRunner } from './abstract/MergeRunner';
 
-export class AcceptMR extends PipelineRunner {
+export class AcceptMR extends MergeRunner {
   protected async runPerProject(project: Project) {
     let resp = await this.findMR(project);
     resp = await this.mergeMR(resp);
@@ -31,21 +23,6 @@ export class AcceptMR extends PipelineRunner {
       findMergeRequests,
     );
     return fetch(this.config.uri, project.id, this.yargs.title, false);
-  }
-
-  private async mergeMR(resp: Response<IMerge>): Promise<Response<IMerge>> {
-    if (resp.status !== StatusCode.Success) {
-      return resp;
-    }
-    this.screenPrinter.setProjectSpinner(resp.project, 'AcceptingMRs');
-    const fetch = compose(
-      this.responsePrinter.bind(this),
-      errorsAreOk,
-      parseAcceptMR,
-      parseNative(resp.project),
-      autoMergeMR,
-    );
-    return await fetch(this.config.uri, resp.project.id, resp.data.iid);
   }
 }
 

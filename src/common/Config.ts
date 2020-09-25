@@ -1,8 +1,9 @@
 import * as fs from 'fs';
-import { validateConfig } from './validateConfig';
-import * as chalk from 'chalk';
+import { isConfigOld, validateConfig } from './validateConfig';
 import { Yargs } from './Yargs';
+import { execSync } from 'child_process';
 
+const chalk = require('chalk');
 const YAML = require('yaml');
 
 export interface Project {
@@ -29,7 +30,8 @@ export class Config {
       if (this.isMatchingYargsSelector(projectKey)) {
         projects.push({
           name: projectKey,
-          id: this._config.projects[projectKey],
+          id: this._config.projects[projectKey].id,
+          repo: this._config.projects[projectKey].repo,
         });
       }
     }
@@ -53,7 +55,15 @@ export class Config {
     return this._config['base-api'];
   }
 
-  public getStage(project: Project) {
+  get stages(): string[] {
+    return this._config['stages'];
+  }
+
+  get tempPath(): string {
+    return this._config['temp-path'];
+  }
+
+  getStage(project: Project) {
     const stage = this._yargs.stage;
     if (!this._config.deploy) return stage;
 
@@ -68,10 +78,15 @@ export class Config {
     if (fs.existsSync(path)) {
       const file = fs.readFileSync(path, 'utf8');
       this._config = YAML.parse(file);
+      if (isConfigOld(this._config)) {
+        console.error(chalk.red('[ERROR] configuration file is to old try using config creator'));
+        process.exit(-1);
+      }
       if (!validateConfig(this._config)) {
         console.error(chalk.red('[ERROR] configuration file is invalid try using config creator'));
         process.exit(-1);
       }
+      execSync(`mkdir -p ${this.tempPath}`);
     } else {
       console.error(chalk.red('[ERROR] configuration file is required, try using config creator'));
       process.exit(-1);

@@ -1,0 +1,30 @@
+version: 1.0.2
+base-api: https://git.example.com/api/v4
+stages:
+  - develop
+  - release/dev
+  - release/qa
+  - release/uat
+  - master
+
+projects:
+  auth: 666
+  backend: 555
+  front: 444
+deploy:
+  auth:
+    dev: dev
+    qa: int
+    uat: example-job-name
+    prod: prod-job-name
+  backend:
+    dev: dev
+    qa: int
+    uat: example-job-name
+    prod: prod-job-name
+  front:
+    dev: dev
+    qa: int
+    uat: example-job-name
+    prod: prod-job-name
+refresh-time: 10000

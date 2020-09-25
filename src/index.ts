@@ -8,6 +8,7 @@ import * as yargs from 'yargs';
 import { branchCommand } from './commands/Branch';
 import { mergeCommand } from './commands/Merge';
 import { acceptCommand } from './commands/AcceptMR';
+import { batmobilCommand } from './commands/Batmobil';
 
 const ttyWidth = process.stdout.columns || 80;
 yargs
@@ -19,6 +20,7 @@ yargs
   .command(tagCommand)
   .command(mergeCommand)
   .command(acceptCommand)
+  .command(batmobilCommand)
   .option('config', {
     type: 'string',
     default: 'config.yml',

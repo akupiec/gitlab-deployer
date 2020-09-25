@@ -15,6 +15,7 @@ export async function runInit(args) {
 
   checkIfFileExists(yargs);
 
+  const tempPath = await askTempPath();
   const basicAPI = await askBasicApi();
   const projectNumber = await askNumberOfProjects();
   const projects = await askProjects(basicAPI, projectNumber);
@@ -26,6 +27,8 @@ export async function runInit(args) {
   const config = {
     version: packageInfo.version,
     'base-api': basicAPI,
+    'temp-path': tempPath,
+    stages: stages,
     projects: mapProjects(projects),
     deploy: mapStages(projects, stages, isGenericJobs),
     'refresh-time': refresh,
@@ -62,10 +65,13 @@ function askOpenEditor() {
     .then((resp) => resp.openEditor);
 }
 
-function mapProjects(projects: Project[]) {
+function mapProjects(projects: any[]) {
   let ret = {};
   projects.forEach((project) => {
-    ret[project.name.replace(' ', '_')] = project.id;
+    ret[project.name.replace(' ', '_')] = {
+      id: project.id,
+      repo: project.ssh_url_to_repo,
+    };
   });
   return ret;
 }
@@ -133,6 +139,17 @@ function askBasicApi() {
         }
         return true;
       },
+    })
+    .then((resp) => resp.data);
+}
+
+function askTempPath() {
+  return inquirer
+    .prompt({
+      name: 'data',
+      message: 'Provide temp dir for projects',
+      type: 'input',
+      default: '/home/user/.gitlab-deployer',
     })
     .then((resp) => resp.data);
 }

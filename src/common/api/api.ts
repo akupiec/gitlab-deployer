@@ -113,6 +113,7 @@ export function findProject(URI: string, search: string) {
     params: {
       search: search,
       membership: true,
+      archived: false,
     },
   };
   return axios(options).then((resp) => resp.data);

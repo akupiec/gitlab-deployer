@@ -1,57 +1,13 @@
 import { Project } from '../common/Config';
-import { PipelineRunner } from './abstract/PipelineRunner';
-import { checkDiff, createNewMergeRequest } from '../common/api/api';
 import { CommandModule } from 'yargs';
-import { compose } from 'ramda';
-import {
-  diffParser,
-  errorsAreOk,
-  parseMerge,
-  parseNative,
-  Response,
-  StatusCode,
-} from '../common/api/api.adapter';
-import { ICompare } from '../common/api/model/iCompare';
+import { MergeRunner } from './abstract/MergeRunner';
 
-export class Merge extends PipelineRunner {
+export class Merge extends MergeRunner {
   protected async runPerProject(project: Project) {
     let resp: any = await this.checkDiff(project);
     resp = await this.createMR(resp);
     resp = await this.awaitIfNeeded(resp, resp.data.sha);
     return resp;
-  }
-
-  private checkDiff(project: Project): Promise<Response<ICompare>> {
-    this.screenPrinter.setProjectSpinner(project, 'Checking diff for MR');
-    const fetch = compose(
-      this.responsePrinter.bind(this),
-      errorsAreOk,
-      diffParser,
-      parseNative(project),
-      checkDiff,
-    );
-    return fetch(this.config.uri, project.id, this.yargs.sourceRef, this.yargs.targetRef);
-  }
-
-  private async createMR<T>(resp: Response<T>): Promise<Response<T>> {
-    if (resp.status !== StatusCode.Success) {
-      return resp;
-    }
-    this.screenPrinter.setProjectSpinner(resp.project, 'Creating New MergeRequest');
-    const fetch = compose(
-      this.responsePrinter.bind(this),
-      errorsAreOk,
-      parseMerge,
-      parseNative(resp.project),
-      createNewMergeRequest,
-    );
-    return await fetch(
-      this.config.uri,
-      resp.project.id,
-      this.yargs.sourceRef,
-      this.yargs.targetRef,
-      this.yargs.title,
-    );
   }
 }
 

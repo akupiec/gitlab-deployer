@@ -102,7 +102,7 @@ export abstract class PipelineRunner extends CommandRunner {
   }
 
   protected async awaitIfNeeded(resp: Response<any>, ref: string): Promise<Response<any>> {
-    if (this.yargs.await && resp.status !== StatusCode.Error) {
+    if (this.yargs.await && resp.status !== StatusCode.Error && ref) {
       return await this.findAndAwait(resp.project, ref);
     }
     return resp;
