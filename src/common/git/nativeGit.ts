@@ -9,9 +9,11 @@ export namespace nativeGit {
     return promisedExec(`git pull`, path);
   }
 
-  export function merge(path: string, ref: string) {
+  export function merge(path: string, ref: string, ffOnly: boolean) {
+    let cmd = `git merge ${ref} `;
+    cmd += ffOnly ? '--ff-only' : '';
     return new Promise((resolve, reject) =>
-      exec(`git merge ${ref}`, { cwd: path }, (error, stdout) => {
+      exec(cmd, { cwd: path }, (error, stdout) => {
         if (error) {
           execSync(`git merge --abort`, { cwd: path });
           const branch = execSync(`git branch --show-current`, { cwd: path });

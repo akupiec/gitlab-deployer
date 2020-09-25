@@ -9,6 +9,7 @@ import { branchCommand } from './commands/Branch';
 import { mergeCommand } from './commands/Merge';
 import { acceptCommand } from './commands/AcceptMR';
 import { batmobilCommand } from './commands/Batmobil';
+import { batarangCommand } from './commands/Batarang';
 
 const ttyWidth = process.stdout.columns || 80;
 yargs
@@ -21,6 +22,7 @@ yargs
   .command(mergeCommand)
   .command(acceptCommand)
   .command(batmobilCommand)
+  .command(batarangCommand)
   .option('config', {
     type: 'string',
     default: 'config.yml',

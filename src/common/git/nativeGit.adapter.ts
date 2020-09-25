@@ -15,7 +15,8 @@ export const parseGit = (project) => (promise: Promise<any>) => {
 export function parseMerge(promise: Promise<Response<any>>) {
   return promise.then(
     (data) => {
-      data.message = `Merge ${data.message}`;
+      const msg = data.message.split('\n').slice(0, 2).join(' ');
+      data.message = `Merge ${msg}`;
       return data;
     },
     (error) => {
