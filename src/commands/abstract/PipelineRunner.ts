@@ -1,32 +1,32 @@
 import { Project } from '../../common/Config';
-import { getPipeline, Response, StatusCode } from '../../common/api/api';
+import { getPipeline } from '../../common/api/api';
 import { sleep } from '../../common/sleep';
-import { PIPELINES_CHECK_SIZE } from '../../costansts';
 import { CommandRunner } from './CommandRunner';
 import { getPipelineByRef } from '../../common/api/api-compex';
 import { IPipeline, IPipelineStatus } from '../../common/api/model/iPipeline';
 import { bold } from 'chalk';
+import {
+  errorsAreOk,
+  parseNative,
+  parsePipelineFind,
+  Response,
+  StatusCode,
+} from '../../common/api/api.adapter';
+import { compose } from 'ramda';
+import { IBranch } from '../../common/api/model/iBranch';
 
 export abstract class PipelineRunner extends CommandRunner {
   protected getPipeline(project: Project, ref: string): Promise<Response<IPipeline>> {
     this.screenPrinter.setProjectSpinner(project, 'Searching pipeline...');
-    return getPipelineByRef(this.config.uri, project.id, ref).then(
-      (data) => {
-        if (!data) {
-          const message = `Not Found in last ${PIPELINES_CHECK_SIZE} triggered pipelines`;
-          this.screenPrinter.setProjectWarn(project, message);
-          return { status: StatusCode.Warn, message };
-        }
-        return {
-          status: StatusCode.Success,
-          data: data,
-        };
-      },
-      (error) => {
-        this.screenPrinter.setProjectError(project, error.message);
-        return { status: StatusCode.Error, message: error.message };
-      },
+
+    const fetch = compose(
+      this.responsePrinter.bind(this),
+      errorsAreOk,
+      parsePipelineFind,
+      parseNative(project),
+      getPipelineByRef,
     );
+    return fetch(this.config.uri, project.id, ref);
   }
 
   protected async awaitPipelineCompletion(
@@ -94,5 +94,17 @@ export abstract class PipelineRunner extends CommandRunner {
       status: lastStatus,
       data: resp,
     };
+  }
+
+  protected responsePrinter(promise: Promise<Response<IBranch>>) {
+    promise.then((data) => this.screenPrinter.setRespMsg(data));
+    return promise;
+  }
+
+  protected async awaitIfNeeded(resp: Response<any>, ref: string): Promise<Response<any>> {
+    if (this.yargs.await && resp.status !== StatusCode.Error) {
+      return await this.awaitForFuturePipe(resp.project, ref);
+    }
+    return resp;
   }
 }

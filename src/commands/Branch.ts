@@ -1,31 +1,27 @@
 import { Project } from '../common/Config';
 import { PipelineRunner } from './abstract/PipelineRunner';
-import { createNewBranch, Response, StatusCode } from '../common/api/api';
+import { createNewBranch } from '../common/api/api';
 import { CommandModule } from 'yargs';
+import { branchParser, errorsAreOk, parseNative, Response } from '../common/api/api.adapter';
+import { IBranch } from '../common/api/model/iBranch';
+import { compose } from 'ramda';
 
 export class Branch extends PipelineRunner {
   protected async runPerProject(project: Project) {
-    const promise = await this.createBranch(project);
-    if (this.yargs.await && promise.status === StatusCode.Success) {
-      return await this.awaitForFuturePipe(project, this.yargs.branchName);
-    } else {
-      return promise;
-    }
+    let resp = await this.createBranch(project);
+    return await this.awaitIfNeeded(resp, this.yargs.branchName);
   }
 
-  private async createBranch(project: Project): Promise<Response<any>> {
+  private async createBranch(project: Project): Promise<Response<IBranch>> {
     this.screenPrinter.setProjectSpinner(project, 'Creating New Branch');
-    return createNewBranch(this.config.uri, project.id, this.yargs.ref, this.yargs.branchName).then(
-      () => {
-        this.screenPrinter.setProjectSuccess(project, 'New Branch crated');
-        return { status: StatusCode.Success };
-      },
-      (error) => {
-        const message = 'Cant create branch (already exists ?): ' + error;
-        this.screenPrinter.setProjectError(project, message);
-        return { status: StatusCode.Error, message };
-      },
+    const fetch = compose(
+      this.responsePrinter.bind(this),
+      errorsAreOk,
+      branchParser,
+      parseNative(project),
+      createNewBranch,
     );
+    return fetch(this.config.uri, project.id, this.yargs.ref, this.yargs.branchName);
   }
 }
 

@@ -1,8 +1,7 @@
 import { Yargs } from '../../common/Yargs';
 import { Config, Project } from '../../common/Config';
 import { ScreenPrinter } from '../../console/ScreenPrinter';
-import { Response } from '../../common/api/api';
-import { IPipeline } from '../../common/api/model/iPipeline';
+import { Response } from '../../common/api/api.adapter';
 
 export abstract class CommandRunner {
   protected yargs!: Yargs;
@@ -25,5 +24,5 @@ export abstract class CommandRunner {
     this.screenPrinter.onEnd(promises);
   }
 
-  protected abstract runPerProject(project: Project): Promise<Response<IPipeline>>;
+  protected abstract runPerProject(project: Project): Promise<Response<any>>;
 }

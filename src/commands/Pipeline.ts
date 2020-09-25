@@ -1,8 +1,16 @@
 import { Project } from '../common/Config';
 import { PipelineRunner } from './abstract/PipelineRunner';
-import { createPipeline, Response, StatusCode } from '../common/api/api';
+import { createPipeline } from '../common/api/api';
 import { IPipeline } from '../common/api/model/iPipeline';
 import { CommandModule } from 'yargs';
+import {
+  errorsAreOk,
+  parseNative,
+  parsePipeline,
+  Response,
+  StatusCode,
+} from '../common/api/api.adapter';
+import { compose } from 'ramda';
 
 export class Pipeline extends PipelineRunner {
   protected async runPerProject(project: Project) {
@@ -14,21 +22,14 @@ export class Pipeline extends PipelineRunner {
   }
 
   private triggerPipeline(project: Project): Promise<Response<IPipeline>> {
-    return createPipeline(this.config.uri, project.id, this.yargs.ref).then(
-      (data) => {
-        this.screenPrinter.setProjectSuccess(project, 'Pipeline crated');
-        return {
-          status: StatusCode.Success,
-          data,
-        };
-      },
-      (err) => {
-        this.screenPrinter.setProjectError(project, 'Pipeline not created ' + err);
-        return {
-          status: StatusCode.Error,
-        };
-      },
+    const fetch = compose(
+      this.responsePrinter.bind(this),
+      errorsAreOk,
+      parsePipeline,
+      parseNative(project),
+      createPipeline,
     );
+    return fetch(this.config.uri, project.id, this.yargs.ref);
   }
 }
 

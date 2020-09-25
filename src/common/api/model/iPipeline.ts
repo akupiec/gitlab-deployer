@@ -9,7 +9,7 @@ export enum IPipelineStatus {
   CANCELED = 'canceled',
   SKIPPED = 'skipped',
   MANUAL = 'manual',
-  SCHEDULED = 'scheduled'
+  SCHEDULED = 'scheduled',
 }
 
 export interface IPipeline {

@@ -4,7 +4,7 @@ import { Instance, render } from 'ink';
 import { InkPainter } from './InkPainter';
 import { createElement } from 'react';
 import { LineData, LineType } from './Interfaces';
-import { Response, StatusCode } from '../common/api/api';
+import { Response, StatusCode } from '../common/api/api.adapter';
 
 export class ScreenPrinter {
   private projectsLines: Map<Project, LineData> = new Map();
@@ -41,6 +41,17 @@ export class ScreenPrinter {
 
   setProjectWarn(project: Project, message: string) {
     return this.setProjectMessage(project, chalk.yellow.bold('[Warn] ') + message);
+  }
+
+  setRespMsg(resp: Response<any>) {
+    switch (resp.status) {
+      case StatusCode.Error:
+        return this.setProjectError(resp.project, resp.message);
+      case StatusCode.Warn:
+        return this.setProjectWarn(resp.project, resp.message);
+      case StatusCode.Success:
+        return this.setProjectSuccess(resp.project, resp.message);
+    }
   }
 
   setProjectMessage(project: Project, message: string) {

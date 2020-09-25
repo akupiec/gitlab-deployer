@@ -1,19 +1,8 @@
 import { IJob } from './model/iJob';
 import { IPipeline } from './model/iPipeline';
+import { IBranch } from './model/iBranch';
 
 const axios = require('axios');
-
-export enum StatusCode {
-  Error,
-  Success,
-  Warn,
-}
-
-export interface Response<T> {
-  status: StatusCode;
-  message?: string;
-  data?: T;
-}
 
 const headers = {
   'PRIVATE-TOKEN': process.env.GIT_ACCESS_TOKEN,
@@ -127,7 +116,12 @@ export function findProject(URI: string, search: string) {
   return axios(options).then((resp) => resp.data);
 }
 
-export function createNewBranch(URI: string, projectId: number, ref: string, branchName: string) {
+export function createNewBranch(
+  URI: string,
+  projectId: number,
+  ref: string,
+  branchName: string,
+): Promise<IBranch> {
   const url = `${URI}/projects/${projectId}/repository/branches`;
   const options = {
     url,

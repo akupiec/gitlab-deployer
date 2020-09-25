@@ -1,82 +1,56 @@
 import { Project } from '../common/Config';
 import { PipelineRunner } from './abstract/PipelineRunner';
-import { findJob, playJob, Response, StatusCode } from '../common/api/api';
+import { findJob, playJob } from '../common/api/api';
 import { IJob } from '../common/api/model/iJob';
 import { IPipeline } from '../common/api/model/iPipeline';
 import { CommandModule } from 'yargs';
+import {
+  errorsAreOk,
+  parseJob,
+  parseJobTrigger,
+  parseNative,
+  Response,
+  StatusCode,
+} from '../common/api/api.adapter';
+import { compose } from 'ramda';
 
 export class Job extends PipelineRunner {
   protected async runPerProject(project: Project) {
-    const pipeline = await this.getPipeline(project, this.yargs.ref);
-    if (pipeline.status !== StatusCode.Success) {
-      return pipeline;
+    let resp = await this.getPipeline(project, this.yargs.ref);
+    if (resp.status !== StatusCode.Success) {
+      return resp;
     }
-    const deployPromise = await this.job(pipeline, project);
-
-    if (this.yargs.await && deployPromise.status === StatusCode.Success) {
-      return await this.awaitPipelineCompletion(project, pipeline.data);
-    } else {
-      return deployPromise;
-    }
+    resp = await this.findJob(resp, project);
+    resp = await this.triggerJob(project, resp);
+    return await this.awaitIfNeeded(resp, this.yargs.ref);
   }
 
-  private async job(pipeline: Response<IPipeline>, project: Project) {
-    if (pipeline.status !== StatusCode.Success || !pipeline.data.id) {
-      return pipeline;
-    }
-    const job = await this.getJob(project, pipeline.data);
+  private async findJob(pipeline: Response<IPipeline>, project: Project) {
+    const fetch = compose(
+      this.responsePrinter.bind(this),
+      errorsAreOk,
+      parseJob,
+      parseNative(project),
+      findJob,
+    );
+    return fetch(this.config.uri, project.id, pipeline.data.id, this.config.getStage(project));
+  }
+
+  private async triggerJob(
+    project: Project,
+    job: Response<IJob | IPipeline>,
+  ): Promise<Response<any>> {
     if (job.status !== StatusCode.Success) {
       return job;
     }
-    return await this.triggerJob(project, job.data);
-  }
-
-  private async getJob(project: Project, pipeline: IPipeline): Promise<Response<IJob>> {
-    const stage = this.config.getStage(project);
-    const uri = this.config.uri;
-    return findJob(uri, project.id, pipeline.id, stage).then(
-      (data) => {
-        if (!data) {
-          const message = 'IJob Not Found';
-          this.screenPrinter.setProjectWarn(project, message);
-          return {
-            status: StatusCode.Warn,
-            message,
-          };
-        }
-        this.screenPrinter.setProjectSpinner(project, 'IJob in progress...');
-        return {
-          status: StatusCode.Success,
-          data,
-        };
-      },
-      (error) => {
-        this.screenPrinter.setProjectError(project, error.message);
-        return {
-          status: StatusCode.Error,
-          message: error.message,
-        };
-      },
+    const fetch = compose(
+      this.responsePrinter.bind(this),
+      errorsAreOk,
+      parseJobTrigger,
+      parseNative(project),
+      playJob,
     );
-  }
-
-  private async triggerJob(project: Project, job: IJob): Promise<Response<any>> {
-    return playJob(this.config.uri, project.id, job.id).then(
-      (data) => {
-        this.screenPrinter.setProjectSuccess(project, 'IJob Started');
-        return {
-          status: StatusCode.Success,
-          data,
-        };
-      },
-      (err) => {
-        this.screenPrinter.setProjectError(project, err.response.data.message);
-        return {
-          status: StatusCode.Error,
-          message: err.response.data.message,
-        };
-      },
-    );
+    return fetch(this.config.uri, project.id, job.data.id);
   }
 }
 
