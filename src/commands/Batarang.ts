@@ -31,10 +31,29 @@ export class Batarang extends BatRunner {
 
 export const batarangCommand: CommandModule = {
   command: 'batarang <stage> [projects]',
-  describe:
-    'Update given <stage> using ff-only merge.\nex.: git checkout prod; git merge --ff-only uat',
+  describe: 'Update given <stage> using ff-only merge.',
   builder: (yargs) =>
     yargs
+      .usage(
+        `+------------------
+|  Updates given <stage> using ff-only merge with previews stage defined by config "stages" block.
+|  
+|  For example if you have defined in config:
+|    stages:
+|      - release/dev
+|      - release/qa
+|      - release/uat
+|    
+|  Usage: gitlab-deployer batarang release/qa 
+|  Will basically call: git checkout release/qa; git merge --ff-only release/dev
+|
+|  Notes:
+|    - command useful only at "branch deployment flow"
+|    - command use local config directory to clone & merge stuff
+|    - can't hit itself with 'batarang release/dev' :}  
++------------------ 
+`,
+      )
       .positional('stage', {
         describe: 'git branch name that will be updated with preview stage',
       })

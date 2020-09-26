@@ -55,11 +55,12 @@ export class Job extends PipelineRunner {
 }
 
 export const jobCommand: CommandModule = {
-  command: 'job <ref> [jobName] [projects]',
-  describe: 'runs single pipeline job',
+  command: 'job <ref> <jobName> [projects]',
+  describe: 'trigger job',
   aliases: ['deploy'],
   builder: (yargs) =>
     yargs
+      .usage('Trigger single job by given [jobName] on pipeline described by <ref>')
       .positional('ref', {
         describe: 'git ref position what should be deployed',
       })

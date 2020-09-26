@@ -27,9 +27,10 @@ export class Tag extends PipelineRunner {
 
 export const tagCommand: CommandModule = {
   command: 'tag <ref> <tag-name> [projects]',
-  describe: 'creates new tags on configured projects',
+  describe: 'creates new tag',
   builder: (yargs) =>
     yargs
+      .usage('creates new tag with <tag-name> using gitlab api on <ref>')
       .positional('ref', {
         describe:
           'git ref position where new tag should be located can be tag, branch or commit hash',

@@ -34,13 +34,33 @@ export class Batmobil extends BatRunner {
 
 export const batmobilCommand: CommandModule = {
   command: 'batmobil [projects]',
-  describe:
-    'Updated all stages. Merge together stages in descending order ex prod -> uat -> qa -> dev.\n Command use local config directory to clone & merge stuff',
+  describe: 'Call batmobil to update all stages!',
   builder: (yargs) =>
-    yargs.positional('projects', {
-      default: 'all',
-      describe: 'name of affected projects separated by ,(comma)',
-    }),
+    yargs
+      .usage(
+        `+------------------
+|  Updated all stages. Merge together stages in descending order.
+|  
+|  
+|  For example if you have defined in config:
+|    stages:
+|      - release/dev
+|      - release/qa
+|      - release/uat
+|    
+|  Will basically: 
+|    merge release/uat into release/qa, then merge release/qa into release/dev
+|
+|  Notes:
+|    - command useful only at "branch deployment flow"
+|    - command use local config directory to clone & merge stuff.
++------------------ 
+`,
+      )
+      .positional('projects', {
+        default: 'all',
+        describe: 'name of affected projects separated by ,(comma)',
+      }),
   handler: (argv) => {
     new Batmobil(argv).run();
   },

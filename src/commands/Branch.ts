@@ -27,9 +27,10 @@ export class Branch extends PipelineRunner {
 
 export const branchCommand: CommandModule = {
   command: 'branch <ref> <branch-name> [projects]',
-  describe: 'creates new branch on configured projects',
+  describe: 'creates new branch',
   builder: (yargs) =>
     yargs
+      .usage('creates new branch named <branch-name> using gitlab api on <ref>')
       .positional('ref', {
         describe: 'git ref position where new branch should be located',
         required: true,

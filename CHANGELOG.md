@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## 1.3.0 - ???
+### Features
+- better error logging
+- new branch release workflow specific commands (batarang & batman)
+- small improvements in  --help
+
 ## 1.2.0 - 2020-09-07
 ### Features
 - new aliases for job stage

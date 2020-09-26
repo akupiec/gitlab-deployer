@@ -9,8 +9,9 @@ import { branchCommand } from './commands/Branch';
 import { batmobilCommand } from './commands/Batmobil';
 import { batarangCommand } from './commands/Batarang';
 
-const ttyWidth = process.stdout.columns || 80;
+const ttyWidth = process.stdout.columns || 120;
 yargs
+  .usage('Useful little tool in deploying multiple microservices at once when using gitlab')
   .command(initCommand)
   .command(checkCommand)
   .command(pipelineCommand)
