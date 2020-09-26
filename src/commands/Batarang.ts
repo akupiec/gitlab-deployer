@@ -30,7 +30,7 @@ export class Batarang extends BatRunner {
 }
 
 export const batarangCommand: CommandModule = {
-  command: 'batarang <stage> [projects]',
+  command: 'batarang <stage>',
   describe: 'Update given <stage> using ff-only merge.',
   builder: (yargs) =>
     yargs
@@ -56,10 +56,6 @@ export const batarangCommand: CommandModule = {
       )
       .positional('stage', {
         describe: 'git branch name that will be updated with preview stage',
-      })
-      .positional('projects', {
-        default: 'all',
-        describe: 'name of affected projects separated by ,(comma)',
       }),
   handler: (argv) => {
     new Batarang(argv).run();

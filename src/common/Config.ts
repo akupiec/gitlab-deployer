@@ -42,7 +42,7 @@ export class Config {
     if (this._yargs.projects === 'all') {
       return true;
     }
-    const projectSelector = this._yargs.projects.split(',');
+    const projectSelector = this._yargs.projects;
     return projectSelector.some((selector) => projectKey.includes(selector));
   }
 

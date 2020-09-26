@@ -55,7 +55,7 @@ export class Job extends PipelineRunner {
 }
 
 export const jobCommand: CommandModule = {
-  command: 'job <ref> <jobName> [projects]',
+  command: 'job <ref> <jobName>',
   describe: 'trigger job',
   aliases: ['deploy'],
   builder: (yargs) =>
@@ -68,11 +68,6 @@ export const jobCommand: CommandModule = {
         alias: 'stage',
         default: 'dev',
         describe: 'name of stage job that will be triggered',
-      })
-      .positional('projects', {
-        default: 'all',
-        describe: 'name of affected projects separated by ,(comma)',
-        type: 'string',
       })
       .option('await', {
         alias: 'a',

@@ -26,7 +26,7 @@ export class Tag extends PipelineRunner {
 }
 
 export const tagCommand: CommandModule = {
-  command: 'tag <ref> <tag-name> [projects]',
+  command: 'tag <ref> <tag-name>',
   describe: 'creates new tag',
   builder: (yargs) =>
     yargs
@@ -38,10 +38,6 @@ export const tagCommand: CommandModule = {
       })
       .positional('tag-name', {
         describe: 'tag name to remove/delete',
-      })
-      .positional('projects', {
-        default: 'all',
-        describe: 'name of affected projects separated by ,(comma)',
       })
       .option('await', {
         alias: 'a',

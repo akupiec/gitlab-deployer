@@ -10,16 +10,12 @@ export class Check extends PipelineRunner {
 }
 
 export const checkCommand: CommandModule = {
-  command: 'check <ref> [projects]',
+  command: 'check <ref>',
   describe: 'check status of pipeline',
   builder: (yargs) =>
     yargs
       .positional('ref', {
         describe: 'git ref position can be tag, branch or hash',
-      })
-      .positional('projects', {
-        default: 'all',
-        describe: 'name of affected projects separated by ,(comma)',
       })
       .option('await', {
         alias: 'a',

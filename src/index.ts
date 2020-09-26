@@ -25,10 +25,11 @@ yargs
     default: 'config.yml',
     describe: 'path to config file',
   })
-  .option('init', {
-    type: 'boolean',
-    global: false,
-    describe: 'create new deployment configuration file',
+  .option('projects', {
+    alias: 'p',
+    array: true,
+    default: 'all',
+    describe: 'name of affected projects separated by space',
   })
   .demandCommand(1, 'You need at least one command before moving on.')
   .wrap(ttyWidth)

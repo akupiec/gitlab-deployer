@@ -26,7 +26,7 @@ export class Branch extends PipelineRunner {
 }
 
 export const branchCommand: CommandModule = {
-  command: 'branch <ref> <branch-name> [projects]',
+  command: 'branch <ref> <branch-name>',
   describe: 'creates new branch',
   builder: (yargs) =>
     yargs
@@ -37,10 +37,6 @@ export const branchCommand: CommandModule = {
       })
       .positional('branch-name', {
         describe: 'branch name to remove/delete',
-      })
-      .positional('projects', {
-        default: 'all',
-        describe: 'name of affected projects separated by ,(comma)',
       })
       .option('await', {
         alias: 'a',

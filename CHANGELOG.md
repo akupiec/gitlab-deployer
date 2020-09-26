@@ -10,6 +10,10 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 - better error logging
 - new branch release workflow specific commands (batarang & batman)
 - small improvements in  --help
+- extended config
+### Braking changes
+- require new config format
+- positional arg [projects] is moved to option --projects (-p)
 
 ## 1.2.0 - 2020-09-07
 ### Features

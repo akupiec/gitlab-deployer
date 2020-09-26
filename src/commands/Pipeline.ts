@@ -26,17 +26,13 @@ export class Pipeline extends PipelineRunner {
 }
 
 export const pipelineCommand: CommandModule = {
-  command: 'pipeline <ref> [projects]',
+  command: 'pipeline <ref>',
   describe: 'trigger pipeline',
   aliases: ['redeploy'],
   builder: (yargs) =>
     yargs
       .positional('ref', {
         describe: 'git ref position can be tag, branch or hash',
-      })
-      .positional('projects', {
-        default: 'all',
-        describe: 'name of affected projects separated by ,(comma)',
       })
       .option('await', {
         alias: 'a',

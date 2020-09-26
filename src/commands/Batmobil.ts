@@ -33,12 +33,11 @@ export class Batmobil extends BatRunner {
 }
 
 export const batmobilCommand: CommandModule = {
-  command: 'batmobil [projects]',
+  command: 'batmobil',
   describe: 'Call batmobil to update all stages!',
   builder: (yargs) =>
-    yargs
-      .usage(
-        `+------------------
+    yargs.usage(
+      `+------------------
 |  Updated all stages. Merge together stages in descending order.
 |  
 |  
@@ -56,11 +55,7 @@ export const batmobilCommand: CommandModule = {
 |    - command use local config directory to clone & merge stuff.
 +------------------ 
 `,
-      )
-      .positional('projects', {
-        default: 'all',
-        describe: 'name of affected projects separated by ,(comma)',
-      }),
+    ),
   handler: (argv) => {
     new Batmobil(argv).run();
   },

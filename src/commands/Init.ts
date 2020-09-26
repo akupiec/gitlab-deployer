@@ -197,5 +197,6 @@ function checkIfFileExists(yargs: Yargs) {
 export const initCommand: CommandModule = {
   command: 'init',
   describe: 'Create configuration file',
+  builder: (yargs) => yargs.option('projects', { hidden: true }),
   handler: (argv) => runInit(argv),
 };
