@@ -9,6 +9,20 @@ export namespace nativeGit {
     return promisedExec(`git pull`, path);
   }
 
+  export function rebase(path: string, ref: string) {
+    return new Promise((resolve, reject) =>
+      exec(`git rebase ${ref}`, { cwd: path }, (error, stdout) => {
+        if (error) {
+          execSync(`git rebase --abort`, { cwd: path });
+          const branch = execSync(`git branch --show-current`, { cwd: path });
+          error.message += `Current Branch: ${branch}`;
+          reject(error);
+          return;
+        }
+        resolve(stdout);
+      }),
+    );
+  }
   export function merge(path: string, ref: string, ffOnly: boolean) {
     let cmd = `git merge ${ref} `;
     cmd += ffOnly ? '--ff-only' : '';

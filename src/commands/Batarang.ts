@@ -10,12 +10,12 @@ export class Batarang extends BatRunner {
     resp = await this.fetch(resp);
     resp = await this.checkout(resp, this.yargs.stage);
     resp = await this.pull(resp);
-    resp = await this.mergeFFOnly(resp);
+    resp = await this.combineFFOnly(resp);
     resp = await this.push(resp);
     return resp;
   }
 
-  private async mergeFFOnly(resp: Response<any>): Promise<Response<any>> {
+  private async combineFFOnly(resp: Response<any>): Promise<Response<any>> {
     let stageIdx = this.config.stages.findIndex((s) => s === this.yargs.stage);
     const prevStage = this.config.stages[stageIdx - 1];
     if (!prevStage) {
@@ -25,18 +25,18 @@ export class Batarang extends BatRunner {
         status: StatusCode.Error,
       };
     }
-    return await this.merge(resp, prevStage, true);
+    return await this.combine(resp, prevStage, true);
   }
 }
 
 export const batarangCommand: CommandModule = {
   command: 'batarang <stage>',
-  describe: 'Update given <stage> using ff-only merge.',
+  describe: 'Update given <stage> using rebase.',
   builder: (yargs) =>
     yargs
       .usage(
         `+------------------
-|  Updates given <stage> using ff-only merge with previews stage defined by config "stages" block.
+|  Updates given <stage> using rebase with previews stage defined by config "stages" block.
 |  
 |  For example if you have defined in config:
 |    stages:
@@ -45,11 +45,11 @@ export const batarangCommand: CommandModule = {
 |      - release/uat
 |    
 |  Usage: gitlab-deployer batarang release/qa 
-|  Will basically call: git checkout release/qa; git merge --ff-only release/dev
+|  Will basically call: git checkout release/qa; git rebase release/dev
 |
 |  Notes:
 |    - command useful only at "branch deployment flow"
-|    - command use local config directory to clone & merge stuff
+|    - command use local config directory to clone & rebase stuff
 |    - can't hit itself with 'batarang release/dev' :}  
 +------------------ 
 `,

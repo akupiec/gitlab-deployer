@@ -25,7 +25,7 @@ export class Batmobil extends BatRunner {
     }
     resp = await this.checkout(resp, lowerStage);
     resp = await this.pull(resp);
-    resp = await this.merge(resp, stage);
+    resp = await this.combine(resp, stage);
     resp = await this.push(resp);
 
     return resp;
@@ -38,7 +38,7 @@ export const batmobilCommand: CommandModule = {
   builder: (yargs) =>
     yargs.usage(
       `+------------------
-|  Updated all stages. Merge together stages in descending order.
+|  Updated all stages. Combine together stages in descending order.
 |  
 |  
 |  For example if you have defined in config:
@@ -48,11 +48,11 @@ export const batmobilCommand: CommandModule = {
 |      - release/uat
 |    
 |  Will basically: 
-|    merge release/uat into release/qa, then merge release/qa into release/dev
+|    rebase release/qa over release/uat, then rebase release/dev over release/qa
 |
 |  Notes:
 |    - command useful only at "branch deployment flow"
-|    - command use local config directory to clone & merge stuff.
+|    - command use local config directory to clone & rebase stuff.
 +------------------ 
 `,
     ),

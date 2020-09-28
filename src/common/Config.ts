@@ -39,7 +39,7 @@ export class Config {
   }
 
   private isMatchingYargsSelector(projectKey: string): boolean {
-    if (this._yargs.projects === 'all') {
+    if (this._yargs.projects.length === 1 && this._yargs.projects[0] === 'all') {
       return true;
     }
     const projectSelector = this._yargs.projects;

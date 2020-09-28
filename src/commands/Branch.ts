@@ -36,7 +36,7 @@ export const branchCommand: CommandModule = {
         required: true,
       })
       .positional('branch-name', {
-        describe: 'branch name to remove/delete',
+        describe: 'branch name to create',
       })
       .option('await', {
         alias: 'a',

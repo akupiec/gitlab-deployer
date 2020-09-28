@@ -58,7 +58,7 @@ export abstract class BatRunner extends PipelineRunner {
     return await exec(path);
   }
 
-  protected async merge(resp: Response<any>, ref: string, ffOnly = false) {
+  protected async combine(resp: Response<any>, ref: string, ffOnly = false) {
     this.screenPrinter.setProjectSpinner(resp.project, 'merging changes...');
     const path = this.config.tempPath + '/' + resp.project.name;
     const exec = compose(
@@ -66,7 +66,8 @@ export abstract class BatRunner extends PipelineRunner {
       errorsAreOk,
       parseMerge,
       parseGit(resp.project),
-      git.merge,
+      // git.merge,
+      git.rebase,
     );
     return await exec(path, ref, ffOnly);
   }
