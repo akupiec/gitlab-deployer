@@ -60,7 +60,11 @@ export const jobCommand: CommandModule = {
   aliases: ['deploy'],
   builder: (yargs) =>
     yargs
-      .usage('Trigger single job by given [jobName] on pipeline described by <ref>')
+      .usage(
+        `gitlab-deployer job <ref> <jobName> 
+
+Trigger single job by given <jobName> on pipeline described by <ref>`,
+      )
       .positional('ref', {
         describe: 'git ref position what should be deployed',
       })

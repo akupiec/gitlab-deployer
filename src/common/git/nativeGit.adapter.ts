@@ -20,7 +20,8 @@ export function parseMerge(promise: Promise<Response<any>>) {
       return data;
     },
     (error) => {
-      error.message = 'Merge have conflicts!\n' + error.data.message;
+      error.message = `Have conflicts! Resolve manually:
+      git checkout ${error.data.currentBranch}; git merge ${error.data.ref}`;
       return Promise.reject(error);
     },
   );

@@ -64,4 +64,8 @@ export class Yargs {
   get title() {
     return this._args.title;
   }
+
+  get rebase(): boolean {
+    return this._args.rebase;
+  }
 }

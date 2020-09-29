@@ -14,15 +14,20 @@ export namespace nativeGit {
       exec(`git rebase ${ref}`, { cwd: path }, (error, stdout) => {
         if (error) {
           execSync(`git rebase --abort`, { cwd: path });
-          const branch = execSync(`git branch --show-current`, { cwd: path });
-          error.message += `Current Branch: ${branch}`;
-          reject(error);
+          const newError: any = { ...error };
+          newError.message = 'Merge have conflicts!';
+          newError.currentBranch = String(
+            execSync(`git branch --show-current`, { cwd: path }),
+          ).trim();
+          newError.ref = ref;
+          reject(newError);
           return;
         }
         resolve(stdout);
       }),
     );
   }
+
   export function merge(path: string, ref: string, ffOnly: boolean) {
     let cmd = `git merge ${ref} `;
     cmd += ffOnly ? '--ff-only' : '';
@@ -30,9 +35,13 @@ export namespace nativeGit {
       exec(cmd, { cwd: path }, (error, stdout) => {
         if (error) {
           execSync(`git merge --abort`, { cwd: path });
-          const branch = execSync(`git branch --show-current`, { cwd: path });
-          error.message += `Current Branch: ${branch}`;
-          reject(error);
+          const newError: any = { ...error };
+          newError.message = 'Merge have conflicts!';
+          newError.currentBranch = String(
+            execSync(`git branch --show-current`, { cwd: path }),
+          ).trim();
+          newError.ref = ref;
+          reject(newError);
           return;
         }
         resolve(stdout);

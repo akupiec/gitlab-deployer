@@ -21,8 +21,10 @@ export abstract class CommandRunner {
       return this.runPerProject(project);
     });
 
-    this.screenPrinter.onEnd(promises);
+    this.screenPrinter.onEnd(promises).then(this.postRun);
   }
+
+  protected postRun(promises: Promise<Response<any>>[]) {}
 
   protected abstract runPerProject(project: Project): Promise<Response<any>>;
 }

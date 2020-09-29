@@ -30,7 +30,11 @@ export const tagCommand: CommandModule = {
   describe: 'creates new tag',
   builder: (yargs) =>
     yargs
-      .usage('creates new tag with <tag-name> using gitlab api on <ref>')
+      .usage(
+        `gitlab-deployer tag <ref> <tag-name>
+
+creates new tag with <tag-name> using gitlab api on <ref>`,
+      )
       .positional('ref', {
         describe:
           'git ref position where new tag should be located can be tag, branch or commit hash',

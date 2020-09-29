@@ -30,7 +30,11 @@ export const branchCommand: CommandModule = {
   describe: 'creates new branch',
   builder: (yargs) =>
     yargs
-      .usage('creates new branch named <branch-name> using gitlab api on <ref>')
+      .usage(
+        `gitlab-deployer branch <ref> <branch-name>
+
+creates new branch named <branch-name> using gitlab api on <ref>`,
+      )
       .positional('ref', {
         describe: 'git ref position where new branch should be located',
         required: true,

@@ -59,6 +59,15 @@ export abstract class BatRunner extends PipelineRunner {
   }
 
   protected async combine(resp: Response<any>, ref: string, ffOnly = false) {
+    const combineFn = this.yargs.rebase ? git.rebase : git.merge;
+    if (this.yargs.rebase) {
+      return this.rebase(resp, ref);
+    } else {
+      return this.merge(resp, ref, ffOnly);
+    }
+  }
+
+  private async merge(resp: Response<any>, ref: string, ffOnly = false) {
     this.screenPrinter.setProjectSpinner(resp.project, 'merging changes...');
     const path = this.config.tempPath + '/' + resp.project.name;
     const exec = compose(
@@ -66,9 +75,21 @@ export abstract class BatRunner extends PipelineRunner {
       errorsAreOk,
       parseMerge,
       parseGit(resp.project),
-      // git.merge,
-      git.rebase,
+      git.merge,
     );
     return await exec(path, ref, ffOnly);
+  }
+
+  private async rebase(resp: Response<any>, ref: string) {
+    this.screenPrinter.setProjectSpinner(resp.project, 'rebasing changes...');
+    const path = this.config.tempPath + '/' + resp.project.name;
+    const exec = compose(
+      this.responsePrinter.bind(this),
+      errorsAreOk,
+      parseMerge,
+      parseGit(resp.project),
+      git.rebase,
+    );
+    return await exec(path, ref);
   }
 }

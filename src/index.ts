@@ -6,8 +6,8 @@ import { jobCommand } from './commands/Job';
 import { initCommand } from './commands/Init';
 import * as yargs from 'yargs';
 import { branchCommand } from './commands/Branch';
-import { batmobilCommand } from './commands/Batmobil';
 import { batarangCommand } from './commands/Batarang';
+import { batBombCommand } from './commands/BatBomb';
 
 const ttyWidth = process.stdout.columns || 120;
 yargs
@@ -18,8 +18,8 @@ yargs
   .command(jobCommand)
   .command(branchCommand)
   .command(tagCommand)
-  .command(batmobilCommand)
   .command(batarangCommand)
+  .command(batBombCommand)
   .option('config', {
     type: 'string',
     default: 'config.yml',
