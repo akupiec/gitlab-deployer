@@ -17,6 +17,8 @@ export class Batarang extends BatRunner {
     for (let i = 0; i < stages.length - 1; i++) {
       resp = await this.runPerStage(resp, stages[i], stages[i + 1]);
     }
+
+    this.displayLogs(resp);
     return resp;
   }
 
@@ -42,9 +44,40 @@ export class Batarang extends BatRunner {
     resp = await this.checkout(resp, lowerStage);
     resp = await this.pull(resp);
     resp = await this.combine(resp, stage);
+    this.keepsLogs(resp, stage, lowerStage);
     resp = await this.push(resp);
 
     return resp;
+  }
+
+  logs = [];
+  private keepsLogs(resp: Response<any>, stage: string, lowerStage: string) {
+    this.logs.push({
+      status: resp.status,
+      message: resp.message,
+      project: resp.project,
+      lowerStage,
+      stage,
+    });
+  }
+
+  private displayLogs(resp: Response<any>) {
+    const msg = this.logs
+      .filter((l) => l.project === resp.project)
+      .map((l) => {
+        switch (l.status) {
+          case StatusCode.Success:
+            return `from: ${l.stage} into: ${l.lowerStage}
+${chalk.green.bold('[OK] ') + l.message}`;
+          case StatusCode.Warn:
+            return `from: ${l.stage} into: ${l.lowerStage}
+${chalk.yellow.bold('[Warn] ') + l.message}`;
+          case StatusCode.Error:
+            return `from: ${l.stage} into: ${l.lowerStage}
+${chalk.red.bold('[ERR] ') + l.message}`;
+        }
+      });
+    this.screenPrinter.setProjectMessage(resp.project, msg.join('\n'));
   }
 }
 
