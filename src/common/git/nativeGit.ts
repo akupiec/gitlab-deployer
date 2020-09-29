@@ -14,18 +14,21 @@ export namespace nativeGit {
       exec(`git rebase ${ref}`, { cwd: path }, (error, stdout) => {
         if (error) {
           const newError: any = { ...error };
-          if (error.message.includes('CONFLICT')) {
-            execSync(`git rebase --abort`, { cwd: path });
-            newError.message = 'Merge have conflicts!';
-            newError.currentBranch = String(
+          exec(`git rebase --abort`, { cwd: path }, (err) => {
+            if (err) {
+              newError.message = 'Merge unknown Err!';
+              reject(newError);
+              return;
+            }
+            const currentBranch = String(
               execSync(`git branch --show-current`, { cwd: path }),
             ).trim();
-            newError.ref = ref;
-          }
-          reject(newError);
-          return;
+            newError.message = `Merge have conflicts!\n called on: ${currentBranch} by git merge ${ref}`;
+            reject(newError);
+          });
+        } else {
+          resolve(stdout);
         }
-        resolve(stdout);
       }),
     );
   }
@@ -37,18 +40,21 @@ export namespace nativeGit {
       exec(cmd, { cwd: path }, (error, stdout) => {
         if (error) {
           const newError: any = { ...error };
-          if (error.message.includes('CONFLICT')) {
-            execSync(`git merge --abort`, { cwd: path });
-            newError.message = 'Merge have conflicts!';
-            newError.currentBranch = String(
+          exec(`git merge --abort`, { cwd: path }, (err) => {
+            if (err) {
+              newError.message = 'Merge unknown Err!';
+              reject(newError);
+              return;
+            }
+            const currentBranch = String(
               execSync(`git branch --show-current`, { cwd: path }),
             ).trim();
-            newError.ref = ref;
-          }
-          reject(newError);
-          return;
+            newError.message = `Merge have conflicts!\n called on: ${currentBranch} by git merge ${ref}`;
+            reject(newError);
+          });
+        } else {
+          resolve(stdout);
         }
-        resolve(stdout);
       }),
     );
   }

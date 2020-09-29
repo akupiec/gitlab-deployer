@@ -34,12 +34,6 @@ export function parseMerge(promise: Promise<Response<any>>) {
       return data;
     },
     (error) => {
-      if (error.haveConflict) {
-        error.message = `Have conflicts! Resolve manually:
-git checkout ${error.data.currentBranch}; git merge ${error.data.ref}`;
-      } else {
-        error.message = `unknown merge error, ${error.message}`;
-      }
       return Promise.reject(error);
     },
   );
