@@ -29,39 +29,37 @@ export abstract class PipelineRunner extends CommandRunner {
     return fetch(this.config.uri, project.id, ref);
   }
 
-  private async awaitCompletion(
-    project: Project,
-    pipeline: IPipeline,
-  ): Promise<Response<IPipeline>> {
-    this.screenPrinter.setProjectSpinner(project, 'Awaiting pipeline...');
-    let resp: IPipeline;
+  private async awaitCompletion(resp: Response<IPipeline>): Promise<Response<IPipeline>> {
+    this.screenPrinter.setProjectSpinner(resp.project, 'Awaiting pipeline...');
+    let ret: IPipeline;
 
-    while (1 && !!pipeline) {
-      resp = await getPipeline(this.config.uri, project.id, pipeline.id);
-      if (resp.status === 'pending') {
-        this.screenPrinter.setProjectSpinner(project, 'Pipeline pending...');
-      } else if (resp.status === 'running') {
-        this.screenPrinter.setProjectSpinner(project, 'Pipeline running...');
+    while (1 && !!resp.data) {
+      ret = await getPipeline(this.config.uri, resp.project.id, resp.data.id);
+      if (ret.status === 'pending') {
+        this.screenPrinter.setProjectSpinner(resp.project, 'Pipeline pending...');
+      } else if (ret.status === 'running') {
+        this.screenPrinter.setProjectSpinner(resp.project, 'Pipeline running...');
       } else {
-        return this.parsePipelineResp(project, resp);
+        return this.parsePipelineResp(resp.project, ret);
       }
       await sleep(this.config.refreshTime);
     }
     return {
       message: 'Pipeline not Found!',
       status: StatusCode.Error,
-      data: resp,
+      project: resp.project,
+      data: ret,
     };
   }
 
-  private async findAndAwait(project: Project, ref: string) {
-    this.screenPrinter.setProjectSpinner(project, 'More waiting....');
+  private async findAndAwait(resp: Response<any>, ref: string) {
+    this.screenPrinter.setProjectSpinner(resp.project, 'More waiting....');
     await sleep(15000);
-    const pipeline = await this.getPipeline(project, ref);
+    const pipeline = await this.getPipeline(resp.project, ref);
     if (pipeline.status === StatusCode.Error) {
       return pipeline;
     }
-    return await this.awaitCompletion(project, pipeline.data);
+    return await this.awaitCompletion(pipeline);
   }
 
   protected parsePipelineResp(project: Project, resp: IPipeline): Response<IPipeline> {
@@ -92,6 +90,7 @@ export abstract class PipelineRunner extends CommandRunner {
     return {
       message: lastMessage,
       status: lastStatus,
+      project: project,
       data: resp,
     };
   }
@@ -103,7 +102,7 @@ export abstract class PipelineRunner extends CommandRunner {
 
   protected async awaitIfNeeded(resp: Response<any>, ref: string): Promise<Response<any>> {
     if (this.yargs.await && resp.status !== StatusCode.Error && ref) {
-      return await this.findAndAwait(resp.project, ref);
+      return await this.findAndAwait(resp, ref);
     }
     return resp;
   }

@@ -38,7 +38,7 @@ export class Batarang extends BatRunner {
   }
 
   private async runPerStage(resp: Response<any>, stage: string, lowerStage: string) {
-    if (resp.status === StatusCode.Error) {
+    if (resp.status !== StatusCode.Success) {
       return resp;
     }
     resp = await this.checkout(resp, lowerStage);
@@ -46,11 +46,13 @@ export class Batarang extends BatRunner {
     resp = await this.combine(resp, stage);
     this.keepsLogs(resp, stage, lowerStage);
     resp = await this.push(resp);
+    resp = await this.awaitIfNeeded(resp, lowerStage);
 
     return resp;
   }
 
   logs = [];
+
   private keepsLogs(resp: Response<any>, stage: string, lowerStage: string) {
     this.logs.push({
       status: resp.status,
@@ -62,19 +64,22 @@ export class Batarang extends BatRunner {
   }
 
   private displayLogs(resp: Response<any>) {
+    if (resp.status !== StatusCode.Success) {
+      return resp;
+    }
     const msg = this.logs
       .filter((l) => l.project === resp.project)
       .map((l) => {
         switch (l.status) {
           case StatusCode.Success:
-            return `from: ${l.stage} into: ${l.lowerStage}
-${chalk.green.bold('[OK] ') + l.message}`;
+            const ok = chalk.green.bold('[OK] ') + l.message.trim();
+            return `${ok} From: ${l.stage} into: ${l.lowerStage}`;
           case StatusCode.Warn:
-            return `from: ${l.stage} into: ${l.lowerStage}
-${chalk.yellow.bold('[Warn] ') + l.message}`;
+            const warn = chalk.yellow.bold('[Warn] ') + l.message.trim();
+            return `${warn} From: ${l.stage} into: ${l.lowerStage}`;
           case StatusCode.Error:
-            return `from: ${l.stage} into: ${l.lowerStage}
-${chalk.red.bold('[ERR] ') + l.message}`;
+            const err = chalk.red.bold('[ERR] ') + l.message.trim();
+            return `${err} From: ${l.stage} into: ${l.lowerStage}`;
         }
       });
     this.screenPrinter.setProjectMessage(resp.project, msg.join('\n'));
@@ -112,6 +117,12 @@ export const batarangCommand: CommandModule = {
         alias: 'r',
         description: `use 'git rebase' instead of 'git merge'`,
         default: false,
+      })
+      .option('await', {
+        alias: 'a',
+        type: 'boolean',
+        default: true,
+        description: 'awaits pipeline completion',
       }),
 
   handler: (argv) => {

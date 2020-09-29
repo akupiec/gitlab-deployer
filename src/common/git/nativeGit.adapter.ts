@@ -12,6 +12,20 @@ export const parseGit = (project) => (promise: Promise<any>) => {
   );
 };
 
+export function parseFetch(promise: Promise<any>) {
+  return promise.then((resp) => {
+    resp.message += 'Fetch success!';
+    return resp;
+  });
+}
+
+export function parsePush(promise: Promise<any>) {
+  return promise.then((resp) => {
+    resp.message += 'Push success!';
+    return resp;
+  });
+}
+
 export function parseMerge(promise: Promise<Response<any>>) {
   return promise.then(
     (data) => {
@@ -20,8 +34,12 @@ export function parseMerge(promise: Promise<Response<any>>) {
       return data;
     },
     (error) => {
-      error.message = `Have conflicts! Resolve manually:
-      git checkout ${error.data.currentBranch}; git merge ${error.data.ref}`;
+      if (error.haveConflict) {
+        error.message = `Have conflicts! Resolve manually:
+git checkout ${error.data.currentBranch}; git merge ${error.data.ref}`;
+      } else {
+        error.message = `unknown merge error, ${error.message}`;
+      }
       return Promise.reject(error);
     },
   );

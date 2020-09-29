@@ -56,7 +56,7 @@ export class Config {
   }
 
   get stages(): string[] {
-    return this._config['stages'];
+    return [...this._config['stages']];
   }
 
   get tempPath(): string {

@@ -64,9 +64,10 @@ export class InkPainter extends Component<InkProps, any> {
           <Spinner type="arrow3" /> {v.message}
         </>
       );
+      const showSpinner = v.type === LineType.Spinner && process.stdout.isTTY;
       lines.push(
         <ProjectLine projectName={k.name} key={k.id}>
-          {v.type === LineType.Spinner ? spinner : text}
+          {showSpinner ? spinner : text}
         </ProjectLine>,
       );
     });

@@ -8,6 +8,7 @@ import * as yargs from 'yargs';
 import { branchCommand } from './commands/Branch';
 import { batarangCommand } from './commands/Batarang';
 import { batBombCommand } from './commands/BatBomb';
+import { mergeCommand } from './commands/Merge';
 
 const ttyWidth = process.stdout.columns || 120;
 yargs
@@ -18,6 +19,7 @@ yargs
   .command(jobCommand)
   .command(branchCommand)
   .command(tagCommand)
+  .command(mergeCommand)
   .command(batarangCommand)
   .command(batBombCommand)
   .option('config', {

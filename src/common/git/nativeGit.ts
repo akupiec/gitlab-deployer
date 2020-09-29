@@ -6,20 +6,22 @@ export namespace nativeGit {
   }
 
   export function pull(path: string) {
-    return promisedExec(`git pull`, path);
+    return promisedExec(`git pull --ff-only`, path);
   }
 
   export function rebase(path: string, ref: string) {
     return new Promise((resolve, reject) =>
       exec(`git rebase ${ref}`, { cwd: path }, (error, stdout) => {
         if (error) {
-          execSync(`git rebase --abort`, { cwd: path });
           const newError: any = { ...error };
-          newError.message = 'Merge have conflicts!';
-          newError.currentBranch = String(
-            execSync(`git branch --show-current`, { cwd: path }),
-          ).trim();
-          newError.ref = ref;
+          if (error.message.includes('CONFLICT')) {
+            execSync(`git rebase --abort`, { cwd: path });
+            newError.message = 'Merge have conflicts!';
+            newError.currentBranch = String(
+              execSync(`git branch --show-current`, { cwd: path }),
+            ).trim();
+            newError.ref = ref;
+          }
           reject(newError);
           return;
         }
@@ -34,13 +36,15 @@ export namespace nativeGit {
     return new Promise((resolve, reject) =>
       exec(cmd, { cwd: path }, (error, stdout) => {
         if (error) {
-          execSync(`git merge --abort`, { cwd: path });
           const newError: any = { ...error };
-          newError.message = 'Merge have conflicts!';
-          newError.currentBranch = String(
-            execSync(`git branch --show-current`, { cwd: path }),
-          ).trim();
-          newError.ref = ref;
+          if (error.message.includes('CONFLICT')) {
+            execSync(`git merge --abort`, { cwd: path });
+            newError.message = 'Merge have conflicts!';
+            newError.currentBranch = String(
+              execSync(`git branch --show-current`, { cwd: path }),
+            ).trim();
+            newError.ref = ref;
+          }
           reject(newError);
           return;
         }
