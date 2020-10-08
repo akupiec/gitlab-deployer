@@ -10,8 +10,22 @@ import { Project } from '../../common/Config';
 import { nativeGit as git } from '../../common/git/nativeGit';
 import { Response, StatusCode } from '../../common/api/api.adapter';
 import { compose } from 'ramda';
+import pLimit from 'p-limit';
 
 export abstract class BatRunner extends PipelineRunner {
+  private limit = pLimit(4);
+
+  run() {
+    const promises = this.config.projects.map(async (project) => {
+      this.screenPrinter.addProject(project);
+      this.screenPrinter.print();
+
+      return this.limit(() => this.runPerProject(project));
+    });
+
+    this.screenPrinter.onEnd(promises).then(this.postRun);
+  }
+
   private gitBasic = (project, fn) =>
     compose(this.responsePrinter.bind(this), errorsAreOk, parseGit(project), fn);
 
