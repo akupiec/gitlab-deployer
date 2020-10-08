@@ -39,17 +39,21 @@ export namespace nativeGit {
     return new Promise((resolve, reject) =>
       exec(cmd, { cwd: path }, (error, stdout) => {
         if (error) {
-          const newError: any = { ...error };
+          const message = error.message;
+          const newError: any = { ...error, message };
           exec(`git merge --abort`, { cwd: path }, (err) => {
-            if (err) {
-              newError.message = 'Merge unknown Err!';
-              reject(newError);
-              return;
-            }
             const currentBranch = String(
               execSync(`git branch --show-current`, { cwd: path }),
             ).trim();
-            newError.message = `Merge have conflicts!\n called on: ${currentBranch} by git merge ${ref}`;
+            const message = `Merge issues! called on: ${currentBranch}\n`;
+            if (err) {
+              newError.message = message + newError.message + err.message;
+              newError.message.trim();
+              reject(newError);
+              return;
+            }
+            newError.message = message;
+            newError.message.trim();
             reject(newError);
           });
         } else {

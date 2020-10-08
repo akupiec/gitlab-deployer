@@ -8,12 +8,11 @@ export class Merge extends BatRunner {
   protected async runPerProject(project: Project) {
     let resp = await this.cloneIfNeeded(project);
     resp = await this.stashChanges(resp);
-    resp = await this.fetch(resp);
     resp = await this.checkout(resp, this.yargs.targetRef);
     resp = await this.pull(resp);
     resp = await this.checkout(resp, this.yargs.sourceRef);
     resp = await this.pull(resp);
-    resp = await this.combine(resp, this.yargs.targetRef, false);
+    resp = await this.combine(resp, this.yargs.targetRef, this.yargs.ffOnly);
     resp = await this.push(resp);
     resp = await this.awaitIfNeeded(resp, this.yargs.sourceRef);
     return resp;
@@ -33,7 +32,7 @@ export const mergeCommand: CommandModule = {
 |  
 |    
 |  Usage: gitlab-deployer merge release/int tag/39-1 
-|  Will basically call: git checkout release/int; git rebase tag/39-1
+|  Will basically call: git checkout release/int; git merge tag/39-1
 |
 |  Notes:
 |    - command use local config directory to clone & merge stuff  
@@ -49,6 +48,11 @@ export const mergeCommand: CommandModule = {
         type: 'string',
         alias: 'ref',
         describe: 'ref into which source will be updated',
+      })
+      .option('ff-only', {
+        type: 'boolean',
+        default: true,
+        describe: 'self explanatory, use --ff-only flag',
       })
       .option('await', {
         alias: 'a',
