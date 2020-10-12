@@ -76,14 +76,14 @@ export function parsePipeline(promise: Promise<Response<any>>) {
 }
 
 export function parseJob(promise: Promise<Response<IJob>>) {
-  return promise.then((data) => {
-    if (!data) {
-      data.message = 'IJob Not Found';
-      data.status = StatusCode.Warn;
-      return data;
+  return promise.then((resp) => {
+    if (!resp || !resp.data) {
+      resp.message = 'IJob Not Found';
+      resp.status = StatusCode.Warn;
+      return resp;
     }
-    data.message = 'IJob found, processing...';
-    return data;
+    resp.message = 'IJob found, processing...';
+    return resp;
   });
 }
 
