@@ -51,7 +51,7 @@ export function parsePipelineFind(promise: Promise<Response<any>>) {
   return promise.then((resp) => {
     if (!resp.data) {
       resp.message = `Not Found in last ${PIPELINES_CHECK_SIZE} triggered pipelines`;
-      resp.status = StatusCode.Warn;
+      resp.status = StatusCode.Error;
       return resp;
     }
 
