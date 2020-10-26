@@ -13,7 +13,7 @@ export enum StatusCode {
 
 export interface Response<T> {
   status: StatusCode;
-  project?: Project; //TODO required!
+  project: Project;
   message?: string;
   data?: T;
 }

@@ -7,8 +7,9 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## 1.3.0 - ???
 ### Features
-- better error logging
+- new command areEquals
 - new branch release workflow specific commands (batarang & batman)
+- better error logging
 - small improvements in  --help
 - extended config
 ### Braking changes

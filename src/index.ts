@@ -9,12 +9,14 @@ import { branchCommand } from './commands/Branch';
 import { batarangCommand } from './commands/Batarang';
 import { batBombCommand } from './commands/BatBomb';
 import { mergeCommand } from './commands/Merge';
+import { areEqualsCommand } from './commands/AreEqualsCommand';
 
 const ttyWidth = process.stdout.columns || 120;
 yargs
   .usage('Useful little tool in deploying multiple microservices at once when using gitlab')
   .command(initCommand)
   .command(checkCommand)
+  .command(areEqualsCommand)
   .command(pipelineCommand)
   .command(jobCommand)
   .command(branchCommand)

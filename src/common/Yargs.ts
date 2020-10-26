@@ -19,6 +19,9 @@ export class Yargs {
   get ref() {
     return this._args.ref;
   }
+  get refB() {
+    return this._args.refB;
+  }
   get tagName() {
     return this._args.tagName;
   }
