@@ -17,7 +17,7 @@ gitlab-deployer <command> --help
  
 ### Installation (by Node)
 
-1. Download & install [node](https://nodejs.org/en/) 
+1. Download & install [node](https://nodejs.org/en/download/)
 1. Download newest's [release](https://github.com/akupiec/gitlab-deployer/releases)
 1. Create your [gitlab personal api token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#creating-a-personal-access-token)
 1. Create environment variable
