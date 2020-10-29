@@ -5,12 +5,13 @@ All notable changes to this project will be documented in this file.
 Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## 1.3.0 - ???
+## 1.3.0 - 2020-10-29
 ### Features
-- new command areEquals
-- new branch release workflow specific commands (batarang & batman)
+- new command "areEquals"
+- new branch release workflow specific command - batarang
+- new command "merge"
 - better error logging
-- small improvements in  --help
+- small improvements in --help
 - extended config
 ### Braking changes
 - require new config format

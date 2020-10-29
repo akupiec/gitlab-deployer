@@ -1,16 +1,28 @@
-version: 1.0.2
+# this is example configuration file fill it out your specific configuration
+
+#version of configuration file
+version: 1.3.0
+#reference to your company gitlab api
 base-api: https://git.example.com/api/v4
+#temporary file where all stuff will be kept for (batarang and merge commands)
+temp-path: /home/CURRENT_USER/.gitlab-deployer
+#stages used by (batarang - for more info refer to gitlab-deployer batarang --help)
 stages:
   - develop
   - release/dev
   - release/qa
   - release/uat
   - master
-
 projects:
-  auth: 666
-  backend: 555
-  front: 444
+  auth:
+    id: 666
+    repo: git@git.example.com:lines/auth.git
+  backend:
+    id: 555
+    repo: git@git.example.com:lines/backend.git
+  front:
+    id: 444
+    repo: git@git.example.com:lines/front.git
 deploy:
   auth:
     dev: dev

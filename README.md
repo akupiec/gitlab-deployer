@@ -9,7 +9,13 @@ capable of handling multiple projects and deployment stages simultaneously.
 - triggering manual jobs by projects and stages 
 - wizard helpful for creating your first configuration file
  
-### Usage
+Note: for more information check build-in help
+```
+gitlab-deployer --help 
+gitlab-deployer <command> --help
+```
+ 
+### Installation (by Node)
 
 1. Download & install [node](https://nodejs.org/en/) 
 1. Download newest's [release](https://github.com/akupiec/gitlab-deployer/releases)
@@ -18,6 +24,5 @@ capable of handling multiple projects and deployment stages simultaneously.
 `
 set GIT_ACCESS_TOKEN=<your-api-token>
 ` 
-1. Create the configuration file by fallowing creation wizard at `gitlab-deployer init`
+1. Create the configuration [example-config.yml](./example-config.yml) using as reference
 
-Note: for more information check `gitlab-deployer --help` and `gitlab-deployer <command> --help`

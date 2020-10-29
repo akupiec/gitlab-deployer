@@ -7,7 +7,6 @@ import { initCommand } from './commands/Init';
 import * as yargs from 'yargs';
 import { branchCommand } from './commands/Branch';
 import { batarangCommand } from './commands/Batarang';
-import { batBombCommand } from './commands/BatBomb';
 import { mergeCommand } from './commands/Merge';
 import { areEqualsCommand } from './commands/AreEqualsCommand';
 
@@ -23,7 +22,6 @@ yargs
   .command(tagCommand)
   .command(mergeCommand)
   .command(batarangCommand)
-  .command(batBombCommand)
   .option('config', {
     type: 'string',
     default: 'config.yml',
