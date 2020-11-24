@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+
+## 1.3.1 - 2020-11-24
+### Fixes
+- fix check pipeline with "manual" status
+
 ## 1.3.0 - 2020-10-29
 ### Features
 - new command "areEquals"

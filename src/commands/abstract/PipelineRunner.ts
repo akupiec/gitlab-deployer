@@ -5,13 +5,7 @@ import { CommandRunner } from './CommandRunner';
 import { getPipelineByRef } from '../../common/api/api-compex';
 import { IPipeline, IPipelineStatus } from '../../common/api/model/iPipeline';
 import { bold } from 'chalk';
-import {
-  errorsAreOk,
-  parseNative,
-  parsePipelineFind,
-  Response,
-  StatusCode,
-} from '../../common/api/api.adapter';
+import { errorsAreOk, parseNative, parsePipelineFind, Response, StatusCode } from '../../common/api/api.adapter';
 import { compose } from 'ramda';
 import { IBranch } from '../../common/api/model/iBranch';
 
@@ -76,6 +70,10 @@ export abstract class PipelineRunner extends CommandRunner {
       this.screenPrinter.setProjectError(project, message);
       lastMessage = message;
       lastStatus = StatusCode.Error;
+    } else if (resp.status === IPipelineStatus.MANUAL) {
+      lastMessage = `Pipeline: ${bold(resp.status)}`;
+      lastMessage += `\nLink: ${resp.web_url}`;
+      lastStatus = StatusCode.Success;
     } else if (resp.status) {
       let message = `Pipeline: ${bold(resp.status)}`;
       message += `\nLink: ${resp.web_url}`;

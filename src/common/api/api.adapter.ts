@@ -59,6 +59,11 @@ export function parsePipelineFind(promise: Promise<Response<any>>) {
     if (resp.data.status === IPipelineStatus.FAILED) {
       msg += `\nLink: ${resp.data.web_url}`;
       resp.status = StatusCode.Error;
+    } else if (
+      resp.data.status === IPipelineStatus.MANUAL ||
+      resp.data.status === IPipelineStatus.CREATED
+    ) {
+      msg += `\nLink: ${resp.data.web_url}`;
     } else if (resp.data.status !== IPipelineStatus.SUCCESS) {
       msg += `\nLink: ${resp.data.web_url}`;
       resp.status = StatusCode.Warn;
