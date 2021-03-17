@@ -5,7 +5,13 @@ import { CommandRunner } from './CommandRunner';
 import { getPipelineByRef } from '../../common/api/api-compex';
 import { IPipeline, IPipelineStatus } from '../../common/api/model/iPipeline';
 import { bold } from 'chalk';
-import { errorsAreOk, parseNative, parsePipelineFind, Response, StatusCode } from '../../common/api/api.adapter';
+import {
+  errorsAreOk,
+  parseNative,
+  parsePipelineFind,
+  Response,
+  StatusCode,
+} from '../../common/api/api.adapter';
 import { compose } from 'ramda';
 import { IBranch } from '../../common/api/model/iBranch';
 

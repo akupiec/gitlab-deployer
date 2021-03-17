@@ -9,6 +9,10 @@ export namespace nativeGit {
     return promisedExec(`git pull --ff-only`, path);
   }
 
+  export function currentBranchName(path: string) {
+    return promisedExec(`git branch --show-current`, path);
+  }
+
   export function rebase(path: string, ref: string) {
     return new Promise((resolve, reject) =>
       exec(`git rebase ${ref}`, { cwd: path }, (error, stdout) => {

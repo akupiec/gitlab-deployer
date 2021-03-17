@@ -81,8 +81,13 @@ export abstract class BatRunner extends PipelineRunner {
     if (resp.status !== StatusCode.Success) {
       return resp;
     }
-    this.screenPrinter.setProjectSpinner(resp.project, 'pulling changes...');
     const path = this.config.tempPath + '/' + resp.project.name;
+    const branchName = await git.currentBranchName(path);
+    if (!branchName) {
+      return resp;
+    }
+
+    this.screenPrinter.setProjectSpinner(resp.project, 'pulling changes...');
     const exec = this.gitBasic(resp.project, git.pull);
     return await exec(path);
   }
@@ -107,7 +112,6 @@ export abstract class BatRunner extends PipelineRunner {
     if (resp.status !== StatusCode.Success) {
       return resp;
     }
-    const combineFn = this.yargs.rebase ? git.rebase : git.merge;
     if (this.yargs.rebase) {
       return this.rebase(resp, ref);
     } else {

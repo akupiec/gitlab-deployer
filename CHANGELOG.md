@@ -6,6 +6,10 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 
+## 1.3.2 - 2021-03-17
+### Fixes
+- fix merge problem occurring when triggered with targetRef as sha or tag
+
 ## 1.3.1 - 2020-11-24
 ### Fixes
 - fix check pipeline with "manual" status
